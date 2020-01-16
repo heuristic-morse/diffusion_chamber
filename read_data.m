@@ -1,8 +1,11 @@
+%testing
+
 % clear everything to start
 close all; clear all;
 
 % find all data folders in the directory
-folders = dir('*001');
+data_dir = "L:\Wolfson Data\Microscopy Data Collection\Chelp Fluorescein +ve_ctrl\Positive Control Timelapse";
+folders = dir([data_dir, '\*001']);
 
 % User inputs: 
 % check whether to run on all folders or not
