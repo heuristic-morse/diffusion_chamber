@@ -1,11 +1,8 @@
 % clear everything to start
 close all; clear all;
 
-% find all folders in the directory
-folders = dir();
-folders = folders([folders.isdir]);
-% skip the first two (which are not useful)
-folders = folders(3:end);
+% find all data folders in the directory
+folders = dir('*001');
 
 % User inputs: 
 % check whether to run on all folders or not
@@ -26,6 +23,7 @@ switch run_all
     % loop through all folders
         for folder = folders'
             folder_name = folder.name;
+            disp(folder_name)
             sprintf('folder name is %s', folder_name);
 
             [mean_intensity{n}, df{n}] = load_data(folder_name, '*.tif');

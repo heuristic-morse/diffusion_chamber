@@ -118,7 +118,7 @@ switch opt
         plot(1:N, p_depth, '--o', 'LineWidth', 1.5,  'Color', colours(rgb));
         xlabel('time (30mins)')
         ylabel('x')
-        ylim([p_depth(1), p_depth(end)])
+        %ylim([p_depth(1), p_depth(end) + 1])
         title(sprintf('Penetration depth is %g%%', 100*p_depth(end)/total_length))
         %save_fig
         newname=['figures\' name '_plot_2.png'];
