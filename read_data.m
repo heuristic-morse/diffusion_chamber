@@ -1,5 +1,3 @@
-%testing
-
 % clear everything to start
 close all; clear all;
 
