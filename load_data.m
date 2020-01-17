@@ -1,8 +1,8 @@
 function [mean_intensity, df] = load_data(folder_name, file_type)
 
     % find all files in dir that end with .jpg
-    files = dir(join([folder_name, '/',file_type]));
-    
+    files = dir(join([folder_name, file_type], '\'));
+
     % preload dataframe with all imagedata and mean_intensity 
     df = {};
     mean_intensity = [];
@@ -15,7 +15,7 @@ function [mean_intensity, df] = load_data(folder_name, file_type)
     for file = files'
         file_name = file.name;
         sprintf('file_name is %s', file_name);
-        channel = imread(join([folder_name, '/',file_name]));
+        channel = imread(join([folder_name, file_name],'/'));
         t_idx = str2double(file_name(end-10:end-9));
         ch_idx = str2double(file_name(end-5:end-4));
 

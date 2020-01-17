@@ -4,8 +4,8 @@
 close all; clear all;
 
 % find all data folders in the directory
-data_dir = '.';%"L:\Wolfson Data\Microscopy Data Collection\Chelp Fluorescein +ve_ctrl\Positive Control Timelapse";
-folders = dir([data_dir, '/*001']);
+data_dir = "D:\Wolfson Data\Microscopy Data Collection\Chelp Fluorescein +ve_ctrl\Positive Control Timelapse";
+folders = dir(join([data_dir "\*001"]));
 
 % User inputs: 
 % check whether to run on all folders or not
@@ -25,8 +25,8 @@ switch run_all
     n = 1;
     % loop through all folders
         for folder = folders'
-            folder_name = folder.name;
-            disp(folder_name)
+            folder_name = join([data_dir folder.name], '\');
+            disp(folder.name)
             sprintf('folder name is %s', folder_name);
 
             [mean_intensity{n}, df{n}] = load_data(folder_name, '*.tif');
@@ -51,6 +51,7 @@ switch run_all
     % get data from specific folder
         prompt = 'Type in folder name:';
         folder_name = input(prompt,'s');
+        folder_name = join([data_dir folder_name], '\');
         sprintf('folder name is %s', folder_name);
 
         [mean_intensity, df] = load_data(folder_name, '*.tif');

@@ -1,36 +1,3 @@
-<<<<<<< HEAD
-close all;
-clearvars -except df mean_intensity
-% rgb choice:
-rgb = 3;
-% folder choice (order by name in parent dir)
-folder = 2;
-% get a long figure window (to max size of image)
-figure('Renderer', 'painters', 'Position', [500 500 1600 500])
-
-for n = 1:16    
-    % plotting image
-    subplot(3,1,1)
-    channel = df{1,folder}{3*(n- 1) + rgb,1};
-    channel_name = df{1,folder}{3*(n- 1)+ rgb,2};
-    if rgb == 1
-        threshold = 200;
-    else
-        threshold = 70;
-    end
-    imshow(channel, [0 threshold]);
-    % plotting average intensity
-    subplot(3,1,2);
-    plot(mean_intensity{1,folder}(:,n,rgb));
-    hold on;
-    plot(mean_intensity{1,folder}(:,n,rgb) + std(double(df{1,folder}{3*(n- 1) + rgb,1}))', '--r');
-    plot(mean_intensity{1,folder}(:,n,rgb) - std(double(df{1,folder}{3*(n- 1) + rgb,1}))', '--r');
-    hold off;
-    % set the ylimits
-    ylim([0, threshold])
-    title(channel_name);
-
-=======
 close all;
 clearvars -except df mean_intensity
 % rgb choice:
@@ -59,8 +26,8 @@ for n = 1:16
     else
 %        [~, i2] = min(y);         % min distance
 %        [~, i2] = min(y(i1:end)); % min distance from well
-        
-        i2 = max(x(y > floor(max(y)/2) & (y < ceil(max(y)/2))));
+        h=0.2;
+        i2 = max(x(y > floor(max(y)*h) & (y < ceil(max(y)*h))));
 
     end
     
@@ -95,6 +62,5 @@ for n = 1:16
     line([x(i1) x(i1)],yL,'LineWidth', 2, 'LineStyle', '--', 'Color', 'k');
     line([x(i2) x(i2)],yL,'LineWidth', 1.5, 'LineStyle', ':', 'Color', 'k');
     
-    pause(0.2)
->>>>>>> 9cb6cb2ec6476dd17ac31e6fdff95764925a1b9d
+    pause()
 end
