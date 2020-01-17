@@ -4,15 +4,15 @@
 close all; clear all;
 
 % find all data folders in the directory
-data_dir = "L:\Wolfson Data\Microscopy Data Collection\Chelp Fluorescein +ve_ctrl\Positive Control Timelapse";
-folders = dir([data_dir, '\*001']);
+data_dir = '.';%"L:\Wolfson Data\Microscopy Data Collection\Chelp Fluorescein +ve_ctrl\Positive Control Timelapse";
+folders = dir([data_dir, '/*001']);
 
 % User inputs: 
 % check whether to run on all folders or not
 p1 = 'Run on all folders? (y/n)';
 run_all = 'y';%input(p1,'s');
 p2 = 'Plot all folders? (y/n)';
-plot_opt = 'y';%input(,'s');
+plot_opt = 'n';%input(,'s');
 p3 = 'Plot which colour? (1=r, 2=g, 3=b)';
 rgb = 3;%input(p3,'s');
 p4 = 'Apply threshold? (y/n)';
