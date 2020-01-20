@@ -1,4 +1,5 @@
-function [well_posn, well] = get_well_posn(data, threshold, N)
+function [well_posn, well] = get_well_posn(data, threshold)
+[~, N, ~] = size(data);
 well = ones(1,N);
     for n = 1:N
         y = data(:,n,2)';

@@ -21,6 +21,7 @@ switch run_all
     case 'y'
     mean_intensity = {1:size(folders,1)};
     df = {1:size(folders,1)};
+    well_posn = 1: length(folders);
     n = 1;
     % loop through all folders
         for folder = folders'
@@ -29,11 +30,11 @@ switch run_all
             sprintf('folder name is %s', folder_name);
 
             [mean_intensity{n}, df{n}] = load_data(folder_name, '/*.tif');
-            well_posn = get_well_posn(mean_intensity{n});
-            pen_depth = get_pen_depth(mean_intensity{n});
-            if plot_opt == 'y'
+            well_posn(n) = get_well_posn(mean_intensity{n}, 'y');
+%            pen_depth = get_pen_depth(mean_intensity{n})
+            if plot_opt == 'n'
                 plot_data(mean_intensity{n},folder_name, 1, threshold, rgb); %plot_1
-%                plot_data(mean_intensity{n},folder_name, 2, threshold, rgb); %plot_2
+                plot_data(mean_intensity{n},folder_name, 2, threshold, rgb); %plot_2
                 close all;
             end
             % check to see whether to continue the loop
@@ -59,4 +60,4 @@ switch run_all
 end
 
 % clear everything except mean_intensity and df
-clearvars -except mean_intensity df
+clearvars -except mean_intensity df well_posn pen_depth
