@@ -1,7 +1,7 @@
 close all;
 clearvars -except df mean_intensity
 % rgb choice:
-rgb = 3;
+rgb = 1;
 c = ['r','g','b'];
 % folder choice (order by name in parent dir)
 folder = 1;
@@ -24,8 +24,6 @@ for n = 1:16
         y = y(y>y(1));
         i2 = length(x);    
     else
-%        [~, i2] = min(y);         % min distance
-%        [~, i2] = min(y(i1:end)); % min distance from well
         h=0.2;
         i2 = max(x(y > floor(max(y)*h) & (y < ceil(max(y)*h))));
 

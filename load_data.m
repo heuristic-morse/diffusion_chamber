@@ -1,7 +1,7 @@
 function [mean_intensity, df] = load_data(folder_name, file_type)
 
     % find all files in dir that end with .jpg
-    files = dir(join([folder_name, file_type], '\'));
+    files = dir(join([folder_name, file_type], ''));
 
     % preload dataframe with all imagedata and mean_intensity 
     df = {};
