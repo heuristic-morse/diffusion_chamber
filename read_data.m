@@ -11,17 +11,18 @@ folders = dir(join([data_dir "*001"], ""));
 p1 = 'Run on all folders? (y/n)';
 run_all = 'y';%input(p1,'s');
 p2 = 'Plot all folders? (y/n)';
-plot_opt = 'y';%input(,'s');
+plot_opt = 'n';%input(,'s');
 p3 = 'Plot which colour? (1=r, 2=g, 3=b)';
 rgb = 3;%input(p3,'s');
 p4 = 'Apply threshold? (type percentage as decimal';
 threshold  = 0.2;%input(p4,'s');
-
+[N, ~] = size(folders);
 switch run_all    
     case 'y'
-    mean_intensity = {1:size(folders,1)};
-    df = {1:size(folders,1)};
-    well_posn = 1: length(folders);
+    mean_intensity = {1:N};
+    df = {1:N};
+    well_posn = 1:N;
+    pen_depth = {1:N};
     n = 1;
     % loop through all folders
         for folder = folders'
@@ -31,8 +32,8 @@ switch run_all
 
             [mean_intensity{n}, df{n}] = load_data(folder_name, '/*.tif');
             well_posn(n) = get_well_posn(mean_intensity{n}, 'y');
-%            pen_depth = get_pen_depth(mean_intensity{n})
-            if plot_opt == 'n'
+            pen_depth{n} = get_pen_depth(mean_intensity{n}, well_posn(n), threshold);
+            if plot_opt == 'y'
                 plot_data(mean_intensity{n},folder_name, 1, threshold, rgb); %plot_1
                 plot_data(mean_intensity{n},folder_name, 2, threshold, rgb); %plot_2
                 close all;
@@ -46,7 +47,6 @@ switch run_all
                 end
             end
             n = n+1;
-
         end
         
     otherwise

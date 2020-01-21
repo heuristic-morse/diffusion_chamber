@@ -1,6 +1,7 @@
 function [well_posn, well] = get_well_posn(data, threshold)
-[~, N, ~] = size(data);
-well = ones(1,N);
+
+    [~, N, ~] = size(data);
+    well = ones(1,N);
     for n = 1:N
         y = data(:,n,2)';
         if threshold == 'y'
@@ -8,7 +9,7 @@ well = ones(1,N);
         end
         dy = diff(y);
 
-        % get well
+        % get well posn
         [~, i1] = max(dy(1:500));
         well(n) = i1;
     end

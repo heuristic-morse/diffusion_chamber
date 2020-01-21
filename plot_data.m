@@ -15,7 +15,7 @@ switch opt
             % plotting image
                 subplot(D,1,c)
                 y = data(:,n,c)';
-                x = 1:length(y);
+                x = 1:M;
 
                 xx = x;
                 yy = y;
