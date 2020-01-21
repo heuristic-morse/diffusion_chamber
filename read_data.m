@@ -23,6 +23,9 @@ switch run_all
     df = {1:N};
     well_posn = 1:N;
     pen_depth = {1:N};
+    pct_change = {1:N};
+    c_change = {1:N};
+
     n = 1;
     % loop through all folders
         for folder = folders'
@@ -32,7 +35,7 @@ switch run_all
 
             [mean_intensity{n}, df{n}] = load_data(folder_name, '/*.tif');
             well_posn(n) = get_well_posn(mean_intensity{n}, 'y');
-            pen_depth{n} = get_pen_depth(mean_intensity{n}, well_posn(n), threshold);
+            [pen_depth{n}, pct_change{n}, c_change{n}]  = get_pen_depth(mean_intensity{n}, well_posn(n), threshold);
             if plot_opt == 'y'
                 plot_data(mean_intensity{n},folder_name, 1, threshold, rgb); %plot_1
                 plot_data(mean_intensity{n},folder_name, 2, threshold, rgb); %plot_2
@@ -60,4 +63,4 @@ switch run_all
 end
 
 % clear everything except mean_intensity and df
-clearvars -except mean_intensity df well_posn pen_depth
+clearvars -except mean_intensity df well_posn pen_depth pct_change c_change

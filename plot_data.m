@@ -14,7 +14,7 @@ switch opt
             for n = 1:N    
             % plotting image
                 subplot(D,1,c)
-                y = data(:,n,c)';
+                y = abs(data(:,n,c)' - data(:,1,c)');
                 x = 1:M;
 
                 xx = x;
@@ -67,7 +67,7 @@ switch opt
         p_depth = zeros(N, 1);
         
         for n = 1:N   
-            y = data(:,n,rgb);
+                y = abs(data(:,n,rgb)' - data(:,1,rgb)');
             x = 1:length(y);
             total_length = length(y);
             xx = x;

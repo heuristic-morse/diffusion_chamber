@@ -1,13 +1,14 @@
-function [p_depth] = get_pen_depth(data, wp, threshold)
+function [p_depth, pct_change, c_change] = get_pen_depth(data, wp, threshold)
     
-    [~, N, RGB] = size(data);
+    [L, N, RGB] = size(data);
     p_depth = ones(N,RGB);
-    
+    pct_change =  ones(N,RGB);
+    c_change = ones(N,RGB);
     for c = 1:RGB
         for n = 1:N
             % get specific data
             y = data(:,n,c)';
-            x = 1:length(y);
+            x = (1:L)*(10e-3/L);
             
             % remove well posn
             x = x(floor(wp*1.1):end);
@@ -21,6 +22,8 @@ function [p_depth] = get_pen_depth(data, wp, threshold)
             else
                 p_depth(n,c) = i2;
             end
+                pct_change(n,c) = p_depth(n,c)/10e-3;
+                c_change(n,c) = trapz(y);
         end
     end
 end

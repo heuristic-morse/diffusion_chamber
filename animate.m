@@ -1,7 +1,7 @@
 close all;
 clearvars -except df mean_intensity
 % rgb choice:
-rgb = 1;
+rgb = 2;
 c = ['r','g','b'];
 % folder choice (order by name in parent dir)
 folder = 1;
@@ -59,6 +59,7 @@ for n = 1:16
     yL = get(gca,'YLim');
     line([x(i1) x(i1)],yL,'LineWidth', 2, 'LineStyle', '--', 'Color', 'k');
     line([x(i2) x(i2)],yL,'LineWidth', 1.5, 'LineStyle', ':', 'Color', 'k');
-    
+    concentration = trapz(y);
+    title(sprintf('c = %s', concentration));
     pause()
 end
