@@ -2,8 +2,8 @@
 close all; clear all;
 
 % find all data folders in the directory
-data_dir = "D:/Wolfson Data/Microscopy Data Collection/Chelp Fluorescein +ve_ctrl/Positive Control Timelapse/";
-%data_dir = "";
+%data_dir = "D:/Wolfson Data/Microscopy Data Collection/Chelp Fluorescein +ve_ctrl/Positive Control Timelapse/";
+data_dir = "";
 folders = dir(join([data_dir "*001"], ""));
 
 % User inputs: 
@@ -37,8 +37,8 @@ switch run_all
             well_posn(n) = get_well_posn(mean_intensity{n}, 'y');
             [pen_depth{n}, pct_change{n}, c_change{n}]  = get_pen_depth(mean_intensity{n}, well_posn(n), threshold);
             if plot_opt == 'y'
-                plot_data(mean_intensity{n},folder.name, folder_name, 1, threshold, rgb); %plot_1
-                plot_data(mean_intensity{n},folder.name, folder_name, 2, threshold, rgb); %plot_2
+                plot_data(mean_intensity{n},data_dir, folder_name, 1, threshold, rgb); %plot_1
+                plot_data(mean_intensity{n},data_dir, folder_name, 2, threshold, rgb); %plot_2
                 close all;
             end
             % check to see whether to continue the loop

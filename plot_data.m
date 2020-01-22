@@ -1,5 +1,5 @@
-function [] = plot_data(data, name,folder_name, opt, threshold, rgb)
-
+function [] = plot_data(data, folder_name,name, opt, threshold, rgb)
+name
 % get a long figure window (to max size of image)
 h1 = figure('Renderer', 'painters', 'Position', [500 500 1600 500]);
 [M, N, D] = size(data);
@@ -14,7 +14,7 @@ switch opt
             for n = 1:N    
             % plotting image
                 subplot(D,1,c)
-                y = abs(data(:,n,c)' - data(:,1,c)');
+                y = data(:,n,c)';
                 x = 1:M;
 
                 xx = x;
@@ -57,10 +57,10 @@ switch opt
             hold on
         end
         %save_fig
-        newname=join([folder_name 'figures/' name '_plot_21a.png'], '');
+        newname=join([folder_name 'figures/' name '_plot_1a.png'], ''); 
         saveas(h1,newname)
         figure(2)
-        newname=join([folder_name 'figures' name '_plot_1b.png'], '');
+        newname=join([folder_name 'figures/' name '_plot_1b.png'], '');
         saveas(gcf,newname)
     case 2
         colours = ['r', 'g','b'];
@@ -109,7 +109,7 @@ switch opt
         %ylim([p_depth(1), p_depth(end) + 1])
         title(sprintf('Penetration depth is %g%%', 100*p_depth(end)/total_length))
         %save_fig
-        newname=join([folder_name 'figures' name '_plot_2.png'], '');
+        newname=join([folder_name 'figures/' name '_plot_2.png'], '');
         saveas(gcf,newname)
 end
 
