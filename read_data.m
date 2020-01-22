@@ -2,7 +2,7 @@
 close all; clear all;
 
 % find all data folders in the directory
-%data_dir = "D:\Wolfson Data\Microscopy Data Collection\Chelp Fluorescein +ve_ctrl\Positive Control Timelapse";
+%data_dir = "D:/Wolfson Data/Microscopy Data Collection/Chelp Fluorescein +ve_ctrl/Positive Control Timelapse";
 data_dir = "";
 folders = dir(join([data_dir "*001"], ""));
 
