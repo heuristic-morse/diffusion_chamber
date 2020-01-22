@@ -18,7 +18,7 @@ end
 
 %% Fit Diffusion (green)
 X = (1:16)*0.5*3600;
-Y = pen_depth{1}(:,2)';
+Y = pen_depth{1}(:,3)';
 [xData, yData] = prepareCurveData( X, Y );
 
 % Set up fittype and options.

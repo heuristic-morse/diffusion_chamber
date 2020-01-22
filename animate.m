@@ -1,5 +1,4 @@
 close all;
-clearvars -except df mean_intensity
 % rgb choice:
 rgb = 2;
 c = ['r','g','b'];

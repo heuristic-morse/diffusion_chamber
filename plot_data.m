@@ -1,5 +1,5 @@
 function [] = plot_data(data, folder_name,name, opt, threshold, rgb)
-name
+
 % get a long figure window (to max size of image)
 h1 = figure('Renderer', 'painters', 'Position', [500 500 1600 500]);
 [M, N, D] = size(data);
