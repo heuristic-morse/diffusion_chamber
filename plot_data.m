@@ -98,7 +98,7 @@ switch opt
 
             subplot(3,1,2);
             plot(dy, 'Color', colours(rgb));
-            ylim([-A, A])
+           % ylim([-A, A])
             pause(0.1)
         end
 
