@@ -15,6 +15,7 @@ function [p_depth, pct_change, c_change] = get_pen_depth(data, wp, threshold)
             y = y(floor(wp*1.1):end);
 
             % get penetration depth
+            % change to min or max for debugging
             [i2, ~] = max(x((y > floor(max(y)*threshold)) & (y < ceil(max(y)*threshold))));
             
             if size(i2,2) == 0

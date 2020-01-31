@@ -16,7 +16,13 @@ function [mean_intensity, df] = load_data(folder_name, file_type)
         file_name = file.name;
         sprintf('file_name is %s', file_name);
         channel = imread(join([folder_name, file_name],'/'));
-        t_idx = str2double(file_name(end-10:end-9));
+        
+        if isa(class(file_name(end-10)),'char') == 1
+            idx = 9;
+        else
+            idx = 10;
+        end
+        t_idx = str2double(file_name(end-idx:end-9));
         ch_idx = str2double(file_name(end-5:end-4));
 
         df{n, 1} = channel;
