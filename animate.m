@@ -10,7 +10,6 @@ axis tight manual % this ensures that getframe() returns a consistent size
 filename = 'testAnimated.gif';
 [~, N, ~] =  size(mean_intensity{1,1});
 for n = 1:N    
-
     % find pen depth    
     i1 = get_well_posn(mean_intensity{1,folder}, 'y');
 
@@ -20,10 +19,11 @@ for n = 1:N
     xx = x;
     yy = y;
     
-    y = y(x>i1*1.1) - min(y(x>i1*1.1));
-    
-    h=0.5;
-    i2 = min(x((y > floor(max(y)*h)) & (y < ceil(max(y)*h))));
+    x = x(floor(i1*1.1):end);
+    y = y(floor(i1*1.1):end) - min(y(floor(i1*1.1):end));
+
+    h=0.2;
+    [i2, ~] = min(x((y > floor(max(y)*h)) & (y < ceil(max(y)*h))));
     
     subplot(2,1,1)
     channel = df{1,folder}{3*(n- 1) + rgb,1};
@@ -37,7 +37,7 @@ for n = 1:N
     yL = get(gca,'YLim');
     hold on;
     line([i2, i2],yL,'LineWidth', 3, 'LineStyle', ':', 'Color', c(rgb));
-    % plotting average intensity
+%    plotting average intensity
 %     subplot(3,1,2);
 %     plot(mean_intensity{1,folder}(:,n,rgb), 'Color',c(rgb));
 %     hold on;
