@@ -1,6 +1,6 @@
 close all;
 % rgb choice:
-rgb = 2;
+rgb = 3;
 c = ['r','g','b'];
 % folder choice (order by name in parent dir)
 folder = 1;
@@ -24,8 +24,8 @@ for n = 1:N
         y = y(y>y(1));
         i2 = length(x);    
     else
-        h=0.5;
-        [i2, ~] = max(x((y > floor(max(y)*h)) & (y < ceil(max(y)*h))));
+        h=0.2;
+        i2 = max(x((y > floor(max(y)*h)) & (y < ceil(max(y)*h))));
     end
     
     subplot(2,1,1)
