@@ -9,25 +9,23 @@ fig_gif = figure('Renderer', 'painters', 'Position', [500 500 1600 500]);
 axis tight manual % this ensures that getframe() returns a consistent size
 filename = 'testAnimated.gif';
 threshold = 'n';
-for n = 1:16    
+[~, N, ~] =  size(mean_intensity{1,1});
+for n = 1:N    
 
     % find pen depth    
+    i1 = get_well_posn(mean_intensity{1,folder}, 'y');
+
     y = mean_intensity{1,folder}(:,n,rgb);
+    y = y - min(y);
     x = 1:length(y);
-    if length(y) > 500
-        [A, i1] = max(diff(y(1:500)));
-    else
-        [A, i1] = max(diff(y));
-    end
 
     if threshold == 'y'&& sum(y > 0) > length(y)*0.90 
         x = x(y>y(1));
         y = y(y>y(1));
         i2 = length(x);    
     else
-        h=0.2;
-        i2 = max(x(y > floor(max(y)*h) & (y < ceil(max(y)*h))));
-
+        h=0.5;
+        [i2, ~] = max(x((y > floor(max(y)*h)) & (y < ceil(max(y)*h))));
     end
     
     subplot(2,1,1)
@@ -41,7 +39,7 @@ for n = 1:16
     imshow(channel, [0 threshold]);
     yL = get(gca,'YLim');
     hold on;
-    line([x(i2) x(i2)],yL,'LineWidth', 3, 'LineStyle', ':', 'Color', c(rgb));
+    line([i2, i2],yL,'LineWidth', 3, 'LineStyle', ':', 'Color', c(rgb));
     % plotting average intensity
 %     subplot(3,1,2);
 %     plot(mean_intensity{1,folder}(:,n,rgb), 'Color',c(rgb));
@@ -58,8 +56,8 @@ for n = 1:16
     plot(x, y,'LineWidth', 1, 'Color', c(rgb));
     hold on
     yL = get(gca,'YLim');
-    line([x(i1) x(i1)],yL,'LineWidth', 2, 'LineStyle', '--', 'Color', 'k');
-    line([x(i2) x(i2)],yL,'LineWidth', 1.5, 'LineStyle', ':', 'Color', 'k');
+    line([i1, i1],yL,'LineWidth', 2, 'LineStyle', '--', 'Color', 'k');
+    line([i2, i2],yL,'LineWidth', 1.5, 'LineStyle', ':', 'Color', 'k');
 %     concentration = trapz(y);
 %     title(sprintf('c = %s', concentration));
 %    pause()
