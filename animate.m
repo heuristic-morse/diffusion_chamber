@@ -23,7 +23,7 @@ for n = 1:N
     y = y(floor(i1*1.1):end) - min(y(floor(i1*1.1):end));
 
     h=0.2;
-    [i2, ~] = min(x((y > floor(max(y)*h)) & (y < ceil(max(y)*h))));
+    [i2, ~] = max(x((y > floor(max(y)*h)) & (y < ceil(max(y)*h))));
     
     subplot(2,1,1)
     channel = df{1,folder}{3*(n- 1) + rgb,1};
