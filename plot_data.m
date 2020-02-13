@@ -19,7 +19,6 @@ switch opt
 
                 xx = x;
                 yy = y;
-                dy = diff(y);
 
                 % get well
                 x = x(floor(i1*1.1):end);
@@ -58,9 +57,9 @@ switch opt
         %save_fig
         newname=join([folder_name 'figures/' name '_plot_1a.png'], ''); 
         saveas(h1,newname)
-        figure(2)
+        h2 = figure(2);
         newname=join([folder_name 'figures/' name '_plot_1b.png'], '');
-        saveas(gcf,newname)
+        saveas(h2,newname)
     case 2
         colours = ['r', 'g','b'];
         p_depth = zeros(N, 1);
