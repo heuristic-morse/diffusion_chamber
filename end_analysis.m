@@ -10,22 +10,26 @@ for i = 1:length(pen_depth)
     mean_pd(i,:) = pen_depth{i}(end, :).*noise;
     %std_pd(i,:) = pen_depth{i}.*noise;
 
-    mean_pc(i,:) = pct_change{i}(end, :).*noise*100;
+    %mean_pc(i,:) = pct_change{i}(end, :).*noise*100;
     %std_pc(i,:) = std(pct_change{i}).*noise*100;
 end
 figure
+xlabel('Condition')
+ylabel('Mean Penetration (%)')
+%xticks([1 2 3 4])
+%xticklabels({'Collagen','Matrigel','Collagen+/muPs','Matrigel+/muPs'})
 rgb_stats = [];
 m = 1;
 %TODO : generalise outside of triplicates, std, smarter way than idx
 idx = 1;
-for n = 1:N_gel
+for n = 1:N_g
      for rgb = 2:3
         c_m = mean([pen_depth{3*N_g - 2}(end, rgb), ...
-                    pen_depth{3*N_g - 1}(end,rgb), ...
-                    pen_depth{3*N_g}(end,rgb)]);
+                    pen_depth{3*N_g - 1}(end, rgb), ...
+                    pen_depth{3*N_g}(end, rgb)]);
         c_std = std([pen_depth{3*N_g - 2}(end, rgb), ...
                     pen_depth{3*N_g - 1}(end, rgb), ...
-                    pen_depth{3*N_g}(end,rgb)]);
+                    pen_depth{3*N_g}(end, rgb)]);
         rgb_stats(:, rgb) = [c_m; c_std];
         hb(rgb) = bar(idx, rgb_stats(1,rgb));
         hold all
@@ -62,7 +66,7 @@ end
 % end
 %% Calculate change in concentration
 
-figure('Renderer', 'painters', 'Position', [500 500 800 1600]);
+figure('Renderer', 'painters');
 
 folder = 1;
 colors = ['r', 'g', 'b'];
