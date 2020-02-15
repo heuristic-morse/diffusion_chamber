@@ -2,9 +2,9 @@
 colors = ['r', 'g', 'b'];
 noise = 1;
 for i = 1:length(pen_depth)
-    if i > 1
-        noise = rand(1,3);
-    end
+    %if i > 1
+    %    noise = rand(1,3);
+    %end
     mean_pd(i,:) = mean(pen_depth{i}).*noise;
     std_pd(i,:) = std(pen_depth{i}).*noise;
 
@@ -24,7 +24,7 @@ for rgb = 1:3
     xlabel('experiment number')
     ylabel('average penetration depth (%pct)')
     xticks(0:length(pen_depth))
-    pause()
+    %pause()
 end
 
 figure('Renderer', 'painters', 'Position', [500 500 800 1600]);
