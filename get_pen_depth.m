@@ -1,6 +1,7 @@
 function [p_depth, pct_change, c_change] = get_pen_depth(data, wp, threshold)
     
     [L, N, RGB] = size(data);
+    
     p_depth = ones(N,RGB);
     pct_change =  ones(N,RGB);
     c_change = ones(N,RGB);

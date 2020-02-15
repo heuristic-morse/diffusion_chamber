@@ -8,20 +8,22 @@ function [mean_intensity, df] = load_data(folder_name, file_type)
     mean_intensity = [];
 
     n = 1;
+    t_idx = 0;
     reverseStr = '';
     
     fprintf('Percent done: ');
-
+    
     for file = files'
         file_name = file.name;
         sprintf('file_name is %s', file_name);
         channel = imread(join([folder_name, file_name],'/'));
         
         if isa(class(file_name(end-10)),'char') == 1
-            idx = 9;
-        else
             idx = 10;
+        else
+            idx = 9;
         end
+        
         t_idx = str2double(file_name(end-idx:end-9));
         ch_idx = str2double(file_name(end-5:end-4));
 
