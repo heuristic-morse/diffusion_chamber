@@ -1,53 +1,6 @@
-<<<<<<< HEAD
-%% Calculate percentage change over all experiments
-colors = ['r', 'g', 'b'];
-noise = 1;
-for i = 1:length(pen_depth)
-    %if i > 1
-    %    noise = rand(1,3);
-    %end
-    mean_pd(i,:) = mean(pen_depth{i}).*noise;
-    std_pd(i,:) = std(pen_depth{i}).*noise;
-
-    mean_pc(i,:) = mean(pct_change{i}).*noise*100;
-    std_pc(i,:) = std(pct_change{i}).*noise*100;
-end
-
-figure('Renderer', 'painters', 'Position', [500 500 800 1600]);
-ymax = max(max(mean_pc)) + max(max(std_pc));
-for rgb = 1:3
-%    subplot(3,1,rgb)
-    errorbar(1:length(mean_pc), mean_pc(:,rgb), std_pc(:,rgb), 'o','color', colors(rgb), ...
-    'MarkerSize', 8, 'LineWidth', 2)   
-    hold all
-    ylim([0 ymax]);
-    xlim([0 length(pen_depth)+1]);
-    xlabel('experiment number')
-    ylabel('average penetration depth (%pct)')
-    xticks(0:length(pen_depth))
-    %pause()
-end
-
-figure('Renderer', 'painters', 'Position', [500 500 800 1600]);
-ymax = max(max(mean_pd)) + max(max(std_pd));
-for rgb = 1:3
-%    subplot(3,1,rgb)
-    errorbar(1:length(pen_depth), mean_pd(:,rgb), std_pd(:,rgb), 'o','color', colors(rgb), ...
-    'MarkerSize', 8, 'LineWidth', 2)
-    hold all
-    ylim([0 ymax]);
-    xlim([0 length(pen_depth)+1]);
-    xlabel('experiment number')
-    ylabel('average penetration depth (a.u units)')
-    xticks(0:length(pen_depth))
-end
-%% Calculate change in concentration
-
-figure('Renderer', 'painters', 'Position', [500 500 800 1600]);
-=======
 
 %% Calculate percentage change over all experiments
-N_g = 2;
+N_g = 4;
 colors = ['r', 'g', 'b'];
 noise = 1;
 for i = 1:length(pen_depth)
@@ -57,14 +10,10 @@ for i = 1:length(pen_depth)
     mean_pd(i,:) = pen_depth{i}(end, :).*noise;
     %std_pd(i,:) = pen_depth{i}.*noise;
 
-    %mean_pc(i,:) = pct_change{i}(end, :).*noise*100;
+    mean_pc(i,:) = pct_change{i}(end, :).*noise*100;
     %std_pc(i,:) = std(pct_change{i}).*noise*100;
 end
 figure
-xlabel('Condition')
-ylabel('Mean Penetration (%)')
-%xticks([1 2 3 4])
-%xticklabels({'Collagen','Matrigel','Collagen+/muPs','Matrigel+/muPs'})
 rgb_stats = [];
 m = 1;
 %TODO : generalise outside of triplicates, std, smarter way than idx
@@ -83,7 +32,11 @@ for n = 1:N_g
         hb(rgb).FaceColor = colors(rgb);
         plt(rgb) = errorbar(idx, rgb_stats(1,rgb),rgb_stats(2,rgb), 'or', 'MarkerSize', 8);
         idx = idx + 1;
-    end
+     end
+xlabel('Condition')
+ylabel('Mean Penetration (%)')
+xticks([1 2 3 4])
+xticklabels({'Collagen','Matrigel','Collagen+/muPs','Matrigel+/muPs'})     
 end
 % 
 % figure('Renderer', 'painters', 'Position', [500 500 800 1600]);
@@ -114,7 +67,6 @@ end
 %% Calculate change in concentration
 
 figure('Renderer', 'painters');
->>>>>>> b90b05b4c31292ccf12d4655573a15377845f6e7
 
 folder = 1;
 colors = ['r', 'g', 'b'];

@@ -2,13 +2,8 @@
 close all; clear all;
 
 % find all data folders in the directory
-<<<<<<< HEAD
 data_dir = "L:/Wolfson Data/Microscopy Data Collection/Chelp Fluorescein +ve_ctrl/Positive Control Timelapse/";
 %data_dir = "";
-=======
-%data_dir = "D:/Wolfson Data/Microscopy Data Collection/Chelp Expt 4/Cropped Timelapse/";
-data_dir = "";
->>>>>>> b90b05b4c31292ccf12d4655573a15377845f6e7
 folders = dir(join([data_dir "*001"], ""));
 
 % User inputs: 
