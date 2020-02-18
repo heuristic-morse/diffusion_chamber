@@ -1,14 +1,16 @@
 close all;
 % rgb choice:
-rgb = 3;
+rgb = 2;
 c = ['r','g','b'];
 % folder choice (order by name in parent dir)
-folder = 1;
+folder = 4;
 % get a long figure window (to max size of image)
 fig_gif = figure('Renderer', 'painters', 'Position', [500 500 1600 500]);
 axis tight manual % this ensures that getframe() returns a consistent size
 filename = 'testAnimated.gif';
 [~, N, ~] =  size(mean_intensity{1,1});
+
+h=0.3;
 for n = 1:N    
     % find pen depth    
     i1 = get_well_posn(mean_intensity{1,folder}, 'y');
@@ -18,12 +20,16 @@ for n = 1:N
     
     xx = x;
     yy = y;
-    
+    % only points beyond the well 
     x = x(floor(i1*1.1):end);
     y = y(floor(i1*1.1):end) - min(y(floor(i1*1.1):end));
 
-    h=0.2;
-    [i2, ~] = max(x((y > floor(max(y)*h)) & (y < ceil(max(y)*h))));
+    % consider only x greater than location of peak intensity
+    [~, i] =  max(y);
+    y = y(i:end);
+    x = x(i:end);
+    
+    i2 = mean(x((y > floor(max(y)*h)) & (y < ceil(max(y)*h))));
     
     subplot(2,1,1)
     title('Collagen + Microparticles')
