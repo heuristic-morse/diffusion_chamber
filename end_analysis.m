@@ -7,10 +7,11 @@ pc_opt = 'y';
 % get data for bar charts
 exp_results = [];
 exp_labels = {};
-c_opt = [1 3];
+c_opt = [2 3];
 for i = 1:length(pen_depth)
     if pc_opt == 'y'
-       exp_results = horzcat(exp_results,pct_change{i}(end, c_opt));
+       first = pct_change{i}(1, c_opt)*100;
+       exp_results = horzcat(exp_results,pct_change{i}(end, c_opt)*100 - first);
     else
        exp_results = horzcat(exp_results,pen_depth{i}(end, c_opt));
     end
