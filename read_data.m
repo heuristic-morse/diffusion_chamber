@@ -2,8 +2,8 @@
 close all; clear all;
 
 % find all data folders in the directory
-data_dir = "L:/Wolfson Data/Microscopy Data Collection/Chelp Fluorescein +ve_ctrl/Positive Control Timelapse/";
-%data_dir = "";
+%data_dir = "L:/Wolfson Data/Microscopy Data Collection/Chelp Fluorescein +ve_ctrl/Positive Control Timelapse/";
+data_dir = "";
 folders = dir(join([data_dir "*001"], ""));
 
 % User inputs: 
@@ -11,11 +11,11 @@ folders = dir(join([data_dir "*001"], ""));
 p1 = 'Run on all folders? (y/n)';
 run_all = 'y';%input(p1,'s');
 p2 = 'Plot all folders? (y/n)';
-plot_opt = 'n';%input(,'s');
+plot_opt = 'y';%input(,'s');
 p3 = 'Plot which colour? (1=r, 2=g, 3=b)';
 rgb = 3;%input(p3,'s');
 p4 = 'Apply threshold? (type percentage as decimal';
-threshold  = 0.2;%input(p4,'s');
+threshold  = 0.5;%input(p4,'s');
 [N, ~] = size(folders);
 switch run_all    
     case 'y'
@@ -31,10 +31,10 @@ switch run_all
         for folder = folders'
             folder_name = join([data_dir folder.name], '');
             disp(folder.name)
-            sprintf('folder name is %s', folder_name);
+            sprintf('\nfolder name is %s', folder_name);
 
             [mean_intensity{n}, df{n}] = load_data(folder_name, '/*.tif');
-            well_posn(n) = get_well_posn(mean_intensity{n}, 'y');
+            well_posn(n) = 1;%get_well_posn(mean_intensity{n}, 'y');
             [pen_depth{n}, pct_change{n}, c_change{n}]  = get_pen_depth(mean_intensity{n}, well_posn(n), threshold);
             if plot_opt == 'y'
                 plot_data(mean_intensity{n},data_dir, folder.name, 1, threshold, rgb, well_posn(n)); %plot_1

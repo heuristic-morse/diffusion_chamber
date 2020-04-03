@@ -25,12 +25,14 @@ switch opt
                 y = y(floor(i1*1.1):end);
 
                 % get penetration depth
-                [i2, ~] = max(x((y > floor(max(y)*threshold)) & (y < ceil(max(y)*threshold))));
-                if size(i2,2) == 0
-                    p_depth(n,c) = x(end);    
-                else
-                    p_depth(n,c) = i2;
-                end
+                %[i2, ~] = max(x((y > floor(max(y)*threshold)) & (y < ceil(max(y)*threshold))));
+                y_tmp =  (y - min(y))/max(y);
+                p_depth(n,c) = mean(x(y_tmp < max(y_tmp)*threshold));
+%                 if size(i2,2) == 0
+%                     p_depth(n,c) = x(end);    
+%                 else
+%                     p_depth(n,c) = i2;
+%                 end
 
                 y0 = zeros(size(y));        
                 z = zeros(size(x));        
@@ -77,13 +79,14 @@ switch opt
             y = y(floor(i1):end);
 
             % get penetration depth
-            [i2, ~] = max(x((y > floor(max(y)*threshold)) & (y < ceil(max(y)*threshold))));
-            if size(i2,2) == 0
-                p_depth(n) = x(end);    
-            else
-                p_depth(n) = i2;
-            end
-
+            %[i2, ~] = max(x((y > floor(max(y)*threshold)) & (y < ceil(max(y)*threshold))));
+            y_tmp =  (y - min(y))/max(y);
+            p_depth(n) = mean(x(y_tmp < max(y_tmp)*threshold));
+%           if size(i2,2) == 
+%               p_depth(n) = x(end);    
+%           else
+%               p_depth(n) = i2;
+%           end
             % plotting image
             subplot(3,1,1);
             plot(x, y,'LineWidth', 1, 'Color', colours(rgb));

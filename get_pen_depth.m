@@ -17,21 +17,24 @@ function [p_depth, pct_change, c_change] = get_pen_depth(data, wp, threshold)
 
             % consider only x greater than location of peak intensity
             [~, i] =  max(y);
-            y = y(i:end);
+            
+            % normalise y to avoid thresholding errors
+            y = (y(i:end) - min(y))/max(y);
             x = x(i:end);
 
             % get penetration depth
-            % change to min or max for debugging
-            i2 = mean(x((y > floor(max(y)*threshold)) & (y < ceil(max(y)*threshold))));
+            % change to mean or max for debugging 
+            i2 = mean(x(y < max(y)*threshold));
             %[i2, ~] = max(x((y > floor(max(y)*threshold)) & (y < ceil(max(y)*threshold))));
             
-            if size(i2,2) == 0
-                p_depth(n,c) = x(end);    
-            else
-                p_depth(n,c) = i2;
-            end
-                pct_change(n,c) = p_depth(n,c)/10e-3;
-                c_change(n,c) = trapz(y);
+            p_depth(n,c) = i2;         
+%             if size(i2,2) == 0
+%                 p_depth(n,c) = x(end);    
+%             else
+%                 p_depth(n,c) = i2;
+%             end
+            pct_change(n,c) = p_depth(n,c)/10e-3;
+            c_change(n,c) = trapz(y);
         end
     end
 end
