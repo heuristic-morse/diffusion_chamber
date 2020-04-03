@@ -10,8 +10,12 @@ exp_labels = {};
 c_opt = [2 3];
 for i = 1:length(pen_depth)
     if pc_opt == 'y'
+<<<<<<< HEAD
        first = pct_change{i}(1, c_opt)*100;
        exp_results = horzcat(exp_results,pct_change{i}(end, c_opt)*100 - first);
+=======
+       exp_results = horzcat(exp_results,pct_change{i}(end, c_opt)*100);
+>>>>>>> 5fc87957cbe640c6c97114246484c0ca439d347a
     else
        exp_results = horzcat(exp_results,pen_depth{i}(end, c_opt));
     end
@@ -25,13 +29,21 @@ for n = 1:length(c_opt)
 end
 
 %plot colours for all experiments
-figure('Renderer', 'painters', 'Position', [500 500 800 1600]);
+figure('Renderer', 'painters');
 m = 1;
 ax = gca;
 hb = bar(exp_results);
 hb.FaceColor = 'flat';
 ax.XTickLabel = exp_labels;
+set(gcf,'color','w');    
 hb.CData(:,:) = repmat(base, length(pen_depth),1);
+
+ax.FontSize = 14
+xticks([1:length(exp_results)])
+xtickangle(45)
+yticks([0 20 40 60 80 100]);
+ytickformat('percentage');
+title('Penetration Depth of Dye/Particle', 'FontSize', 24)
 
 % getting triplicate data
 %number of independent exps (ie gels)
@@ -49,31 +61,39 @@ for n = 1:n_gels
 end
 
 %plot colours for trip experiments
-figure('Renderer', 'painters', 'Position', [500 500 800 1600]);
+figure('Renderer', 'painters');
 ax = gca;
 hb = bar(trp_mean);
 hb.FaceColor = 'flat';
 hold on
 errorbar(1:length(trp_mean), trp_mean,trp_std, 'or', 'MarkerSize', 8);
 ax.XTickLabel = trp_labels;
+set(gcf,'color','w');    
 hb.CData(:,:) = repmat(base, length(trp_mean)/length(c_opt),1);
 
-%% Calculate change in concentration
+ax.FontSize = 14
+xticks([1:length(exp_results)])
+xtickangle(45)
+yticks([0 20 40 60 80 100]);
+ytickformat('percentage');
+title('Mean Penetration Depth of Dye/Particle', 'FontSize', 24)
 
-figure('Renderer', 'painters', 'Position', [500 500 800 1600]);
-
-folder = 1;
-colors = ['r', 'g', 'b'];
-for rgb = 1:3
-    subplot(3,1,rgb)
-    hb(rgb) = bar((1:16)*0.5,c_change{folder}(:,rgb));
-    hb(rgb).FaceColor = colors(rgb);
-
-    hold on
-    plot((1:16)*0.5, mean(c_change{folder}(:,rgb))*ones(16), '--or', 'LineWidth', 2)
-    xlabel('time (hours)')
-    ylabel('concentration (a.u units)')
-end
+% %% Calculate change in concentration
+% 
+% figure('Renderer', 'painters', 'Position', [500 500 800 1600]);
+% 
+% folder = 1;
+% colors = ['r', 'g', 'b'];
+% for rgb = 1:3
+%     subplot(3,1,rgb)
+%     hb(rgb) = bar((1:16)*0.5,c_change{folder}(:,rgb));
+%     hb(rgb).FaceColor = colors(rgb);
+% 
+%     hold on
+%     plot((1:16)*0.5, mean(c_change{folder}(:,rgb))*ones(16), '--or', 'LineWidth', 2)
+%     xlabel('time (hours)')
+%     ylabel('concentration (a.u units)')
+% end
 
 
 %% Fit Diffusion (green)
