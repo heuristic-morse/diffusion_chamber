@@ -2,8 +2,8 @@
 close all; clear all;
 
 % find all data folders in the directory
-%data_dir = "L:/Wolfson Data/Microscopy Data Collection/Chelp Fluorescein +ve_ctrl/Positive Control Timelapse/";
-data_dir = "";
+data_dir = "L:/Wolfson Data/Microscopy Data Collection/TripleChip - Fluorescein/Chip 2/";
+%data_dir = "";
 folders = dir(join([data_dir "*001"], ""));
 
 % User inputs: 
@@ -11,11 +11,11 @@ folders = dir(join([data_dir "*001"], ""));
 p1 = 'Run on all folders? (y/n)';
 run_all = 'y';%input(p1,'s');
 p2 = 'Plot all folders? (y/n)';
-plot_opt = 'y';%input(,'s');
+plot_opt = 'n';%input(,'s');
 p3 = 'Plot which colour? (1=r, 2=g, 3=b)';
-rgb = 3;%input(p3,'s');
+rgb = 2;%input(p3,'s');
 p4 = 'Apply threshold? (type percentage as decimal';
-threshold  = 0.5;%input(p4,'s');
+threshold  = 0.2;%input(p4,'s');
 [N, ~] = size(folders);
 switch run_all    
     case 'y'

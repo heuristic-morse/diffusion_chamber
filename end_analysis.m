@@ -10,12 +10,8 @@ exp_labels = {};
 c_opt = [2 3];
 for i = 1:length(pen_depth)
     if pc_opt == 'y'
-<<<<<<< HEAD
        first = pct_change{i}(1, c_opt)*100;
-       exp_results = horzcat(exp_results,pct_change{i}(end, c_opt)*100 - first);
-=======
-       exp_results = horzcat(exp_results,pct_change{i}(end, c_opt)*100);
->>>>>>> 5fc87957cbe640c6c97114246484c0ca439d347a
+       exp_results = horzcat(exp_results,pct_change{i}(end, c_opt)*100);% - first);
     else
        exp_results = horzcat(exp_results,pen_depth{i}(end, c_opt));
     end
@@ -43,7 +39,7 @@ xticks([1:length(exp_results)])
 xtickangle(45)
 yticks([0 20 40 60 80 100]);
 ytickformat('percentage');
-title('Penetration Depth of Dye/Particle', 'FontSize', 24)
+title('Penetration Depth of Dye/Particle, h=20%', 'FontSize', 24)
 
 % getting triplicate data
 %number of independent exps (ie gels)
@@ -76,7 +72,7 @@ xticks([1:length(exp_results)])
 xtickangle(45)
 yticks([0 20 40 60 80 100]);
 ytickformat('percentage');
-title('Mean Penetration Depth of Dye/Particle', 'FontSize', 24)
+title('Mean Penetration Depth of Dye/Particle, h=20%', 'FontSize', 24)
 
 % %% Calculate change in concentration
 % 
