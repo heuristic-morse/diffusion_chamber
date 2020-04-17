@@ -1,4 +1,4 @@
-function [p_depth, pct_change, c_change] = get_pen_depth(data, wp, threshold)
+function [p_depth, pct_change, c_change] = get_pen_depth(data, wp, threshold, fcn_name)
     
     [L, N, RGB] = size(data);
     
@@ -23,16 +23,16 @@ function [p_depth, pct_change, c_change] = get_pen_depth(data, wp, threshold)
             x = x(i:end);
 
             % get penetration depth
-            % change to mean or max for debugging 
-            i2 = mean(x(y < max(y)*threshold));
+            % change to mean or min for debugging, 
+            
+            i2 = feval(fcn_name,x(y < max(y)*threshold));
             %[i2, ~] = max(x((y > floor(max(y)*threshold)) & (y < ceil(max(y)*threshold))));
             
-            p_depth(n,c) = i2;         
-%             if size(i2,2) == 0
-%                 p_depth(n,c) = x(end);    
-%             else
-%                 p_depth(n,c) = i2;
-%             end
+            if size(i2,2) == 0
+                p_depth(n,c) = x(end);    
+            else
+                 p_depth(n,c) = i2;
+            end
             pct_change(n,c) = p_depth(n,c)/10e-3;
             c_change(n,c) = trapz(y);
         end

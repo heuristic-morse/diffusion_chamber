@@ -15,7 +15,7 @@ for i = 1:length(pen_depth)
     else
        exp_results = horzcat(exp_results,pen_depth{i}(end, c_opt));
     end
-    exp_labels{i} = horzcat(repmat([df{1,i}{1,2}(1:5),'  '],length(c_opt),1), colors(c_opt)');
+    exp_labels{i} = horzcat(repmat([label{i}{1}(1:5),'  '],length(c_opt),1), colors(c_opt)');
 end
 
 %get colours for bar charts
@@ -34,14 +34,14 @@ ax.XTickLabel = exp_labels;
 set(gcf,'color','w');    
 hb.CData(:,:) = repmat(base, length(pen_depth),1);
 
-ax.FontSize = 14
+ax.FontSize = 14;
 xticks([1:length(exp_results)])
 xtickangle(45)
 yticks([0 20 40 60 80 100]);
 ytickformat('percentage');
 title('Penetration Depth of Dye/Particle, h=20%', 'FontSize', 24)
 
-% getting triplicate data
+%% getting triplicate data
 %number of independent exps (ie gels)
 n_gels = length(exp_results)/length(c_opt)/3;
 trp_mean = []; trp_std = [];trp_labels = {};
@@ -67,7 +67,7 @@ ax.XTickLabel = trp_labels;
 set(gcf,'color','w');    
 hb.CData(:,:) = repmat(base, length(trp_mean)/length(c_opt),1);
 
-ax.FontSize = 14
+ax.FontSize = 14;
 xticks([1:length(exp_results)])
 xtickangle(45)
 yticks([0 20 40 60 80 100]);

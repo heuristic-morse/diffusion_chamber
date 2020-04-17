@@ -33,12 +33,13 @@ switch run_all
             disp(folder.name)
             sprintf('\nfolder name is %s', folder_name);
 
-            [mean_intensity{n}, df{n}] = load_data(folder_name, '/*.tif');
+            [mean_intensity{n}, label{n}] = load_data(folder_name, '/*.tif');
             well_posn(n) = 1;%get_well_posn(mean_intensity{n}, 'y');
-            [pen_depth{n}, pct_change{n}, c_change{n}]  = get_pen_depth(mean_intensity{n}, well_posn(n), threshold);
+            fcn = 'mean';
+            [pen_depth{n}, pct_change{n}, c_change{n}]  = get_pen_depth(mean_intensity{n}, well_posn(n), threshold, fcn);
             if plot_opt == 'y'
-                plot_data(mean_intensity{n},data_dir, folder.name, 1, threshold, rgb, well_posn(n)); %plot_1
-                plot_data(mean_intensity{n},data_dir, folder.name, 2, threshold, rgb, well_posn(n)); %plot_2
+                 plot_data(mean_intensity{n},data_dir, folder.name, 1, rgb, well_posn(n), pct_change{n}); %plot_1
+                 plot_data(mean_intensity{n},data_dir, folder.name, 2, rgb, well_posn(n), pct_change{n}); %plot_2
                 close all;
             end
             % check to see whether to continue the loop
@@ -61,6 +62,8 @@ switch run_all
 
         [mean_intensity, df] = load_data(folder_name, '/*.tif');
 end
-
+display(pen_depth{1,1})
 % clear everything except mean_intensity and df
-clearvars -except mean_intensity df well_posn pen_depth pct_change c_change
+clearvars -except mean_intensity label well_posn pen_depth pct_change c_change
+
+save('chip1.mat','mean_intensity' ,'label' ,'well_posn', 'pen_depth' ,'pct_change' ,'c_change')

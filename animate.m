@@ -3,7 +3,7 @@ close all;
 rgb = 2;
 c = ['r','g','b'];
 % folder choice (order by name in parent dir)
-folder = 4;
+folder = 3;
 % get a long figure window (to max size of image)
 fig_gif = figure('Renderer', 'painters', 'Position', [500 500 1600 500]);
 axis tight manual % this ensures that getframe() returns a consistent size

@@ -27,10 +27,8 @@ function [mean_intensity, df] = load_data(folder_name, file_type)
         t_idx = str2double(file_name(end-idx:end-9));
         ch_idx = str2double(file_name(end-5:end-4));
 
-        df{n, 1} = channel;
-        df{n, 2} = file_name;
-        mean_intensity(:,t_idx + 1, ch_idx + 1) = mean(channel)'; 
-        
+        df{n} = file_name;
+        mean_intensity(:,t_idx + 1, ch_idx + 1) = mean(channel(1:300, :))'; 
     
         percentDone = 100 * n / length(files);
         msg = sprintf('%3.1f', percentDone); %Don't forget this semicolon
