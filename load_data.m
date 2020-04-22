@@ -24,8 +24,8 @@ function df = load_data(folder_name, file_type)
         t_idx = str2double(file_name(end-idx:end-9));
         ch_idx = str2double(file_name(end-5:end-4));
         path = join([folder_name, file_name], '/');
-        
-        exp_data = ExperimentData(path,file_name,ch_idx, t_idx);
+        label = split(file_name, '0');
+        exp_data = ExperimentData(path,label(1),ch_idx, t_idx);
         exp_data.setMeanIntensity();
 
         df{t_idx+1, ch_idx+1} = exp_data;

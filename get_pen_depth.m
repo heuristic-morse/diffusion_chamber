@@ -1,14 +1,17 @@
-function [p_depth, pct_change, c_change] = get_pen_depth(data, wp, threshold, fcn_name)
+function df = get_pen_depth(df, threshold, fcn_name)
     
-    [L, N, RGB] = size(data);
     
-    p_depth = ones(N,RGB);
-    pct_change =  ones(N,RGB);
-    c_change = ones(N,RGB);
-    for c = 1:RGB
-        for n = 1:N
+[N_tp, N_ch] = size(df);
+    for t_idx = 1:N_tp
+        for ch_idx = 1:N_ch
+            pd_data = [];
+            expdata = df{t_idx,ch_idx};
+            
             % get specific data
-            y = data(:,n,c)';
+%           y = data(:,n,c)';
+            y = expdata.MeanIntensity;           
+            L = length(y);
+            wp = expdata.WellPosn;
             x = (1:L)*(10e-3/L);
             
             % remove well posn
@@ -29,12 +32,15 @@ function [p_depth, pct_change, c_change] = get_pen_depth(data, wp, threshold, fc
             %[i2, ~] = max(x((y > floor(max(y)*threshold)) & (y < ceil(max(y)*threshold))));
             
             if size(i2,2) == 0
-                p_depth(n,c) = x(end);    
+                pd_data(1) = x(end);    
             else
-                 p_depth(n,c) = i2;
+                pd_data(1)= i2;
             end
-            pct_change(n,c) = p_depth(n,c)/10e-3;
-            c_change(n,c) = trapz(y);
+            
+           pd_data(2) = pd_data(1)/10e-3;
+           pd_data(3) = trapz(y);
+           
+           expdata.setPenData(pd_data, fcn_name);
         end
     end
 end

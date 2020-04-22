@@ -33,11 +33,11 @@ switch run_all
             df{n} = load_data(folder_name, '/*.tif');
             
             get_well_posn(df{n}, 'y', 0);
-            fcn = 'mean';
-            [pen_depth{n}, pct_change{n}, c_change{n}]  = get_pen_depth(mean_intensity{n}, well_posn(n), threshold, fcn);
+            get_pen_depth(df{n}, threshold, 'mean');
+            
             if plot_opt == 'y'
-                 plot_data(mean_intensity{n},data_dir, folder.name, 1, rgb, well_posn(n), pct_change{n}); %plot_1
-                 plot_data(mean_intensity{n},data_dir, folder.name, 2, rgb, well_posn(n), pct_change{n}); %plot_2
+                plot_data(df, 1, rgb); %plot_1
+                plot_data(df, 2, rgb); %plot_2
                 close all;
             end
             % check to see whether to continue the loop
@@ -60,7 +60,6 @@ switch run_all
 
         [mean_intensity, label] = load_data(folder_name, '/*.tif');
 end
-display(pen_depth{1,1})
 % clear everything except mean_intensity and df
 clearvars -except mean_intensity label well_posn pen_depth pct_change c_change
 

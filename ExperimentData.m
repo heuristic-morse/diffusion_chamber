@@ -6,10 +6,14 @@ classdef ExperimentData < handle
       ChannelNum
       TimePoint
       
-      WellPosn
-      PenetrationDepth
       MeanIntensity
       Data
+      
+      WellPosn
+      
+      PenDepth
+      PcntPenDepth
+      ConcChange
    end
    
    properties (Transient)
@@ -62,6 +66,14 @@ classdef ExperimentData < handle
             DF.WellData = 'No well in experiment';
          end
       end
+         
+        function setPenData(DF,pd, fcn)
+            DF.PenDepth= pd(1);
+            DF.PcntPenDepth= pd(2);
+            DF.ConcChange= pd(3);
+            
+            DF.PenData = sprintf('Penetration depth calculated using fcn "%s"', fcn);           
+        end   
             
       function setMeanIntensity(DF)
          if (strcmp(DF.LoadMsg,'No Data'))
@@ -81,7 +93,7 @@ classdef ExperimentData < handle
          disp(['Data: ',DF.LoadMsg])
          wp = sprintf('%0.2f',DF.WellPosn);
          disp(['Well Position: ',wp])
-         pd = sprintf('%0.2f',DF.PenetrationDepth);
+         pd = sprintf('%0.2f',DF.PenDepth);
          disp(['Penetration Depth: ',pd])
          disp('-------------------------')
       end
@@ -96,9 +108,13 @@ classdef ExperimentData < handle
       
       function getPenDepthInfo(DF)
          disp('-------------------------')
-         pd = sprintf('%0.2f',DF.PenetrationDepth);
+         pd = sprintf('%0.2f',DF.PenDepth);
          disp(['Penetration Depth: ',pd])
-         disp(['Additional Info: \n',DF.PenData])
+         pctpd = sprintf('%.2f%%',DF.PcntPenDepth*100);
+         disp(['Percentage Penetration: ',pctpd])
+         cc = sprintf('%0.2f',DF.ConcChange);
+         disp(['Concentration Change: ',cc, ' (TODO)'])
+         disp(['Additional Info: ',DF.PenData])
          disp('-------------------------')
       end
    end
