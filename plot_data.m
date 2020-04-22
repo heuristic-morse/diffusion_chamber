@@ -1,26 +1,33 @@
-function [] = plot_data(data, folder_name,name, opt, rgb, i1, p_depth)
+function [] = plot_data(df, opt, c_opt)
 
 % get a long figure window (to max size of image)
 h1 = figure('Renderer', 'painters');%, 'Position', [500 500 1600 500]);
-[M, N, D] = size(data);
+[N_timepoints, N_channels] = size(df);
+rgb = ['r', 'g','b'];
+
 switch opt
     case 1
         % rgb choice:
-        rgb = ['r', 'g','b'];        
-        for c = 1:D
+        for ch_idx = 1:N_channels
             figure(h1)
-            for n = 1:N    
+            p_depths = 1:N_timepoints;
+            for t_idx = 1:N_timepoints    
+                expdata = df{t_idx,ch_idx};
+                
             % plotting image
-                subplot(D,1,c)
-                y = (data(:,n,c) - min(data(:,n,c)))';
-                x = 1:M;
+                subplot(N_channels,1,ch_idx)
+                y = expdata.MeanIntensity;     
+                pd = expdata.PenDepth;
+                wp = expdata.WellPosn;
+
+                x = 1:length(y);
 
                 xx = x;
                 yy = y;
 
-                % get well
-                x = x(floor(i1*1.1):end);
-                y = y(floor(i1*1.1):end);
+                % use only from well posn
+                x = x(floor(wp*1.1):end);
+                y = y(floor(wp*1.1):end);
 
                 y0 = zeros(size(y));        
                 z = zeros(size(x));        
@@ -28,68 +35,77 @@ switch opt
                             'facecol','no',...
                             'linew',0.1,...
                             'edgealpha',.01,...
-                            'edgecolor',rgb(c));
+                            'edgecolor',rgb(ch_idx));
 
                 hold on
                 yL = get(gca,'YLim');
                 xL = length(xx);
                 plot(xx, yy, 'LineWidth', 0.5, 'Color', 'k')
-                line([i1 i1],yL,'LineWidth', 2, 'LineStyle', '--', 'Color', 'k')
-                line(xL.*[p_depth(n, c) p_depth(n, c)],yL,'LineWidth', 1.5, 'LineStyle', ':', 'Color', 'k');
-            pause(0.2)
+                line([wp wp],yL,'LineWidth', 2, 'LineStyle', '--', 'Color', 'k')
+                line(xL.*[pd pd],yL,'LineWidth', 1.5, 'LineStyle', ':', 'Color', 'k');
+                p_depths(t_idx) = pd;
+                
+%           pause(0.2)
             end
             figure(2)
-            semilogy(1:N, xL*p_depth(:,c), '--o', 'LineWidth', 1.5, 'Color', rgb(c));
+            semilogy(1:N_timepoints, xL*p_depths(:,ch_idx), '--o', 'LineWidth', 1.5, 'Color', rgb(ch_idx));
             xlabel('time (30mins)')
             ylabel('x')
         %    ylim([p_depth(1, 1)-1e3, p_depth(end, c)+1e3])
             hold on
         end
-        %save_fig
-        newname=join([folder_name 'figures/' name '_plot_1a.png'], ''); 
+        %save_fig        
+        newname=join(['figures/' char(expdata.Label) '_plot_1a.png'], ''); 
         saveas(h1,newname)
         h2 = figure(2);
-        newname=join([folder_name 'figures/' name '_plot_1b.png'], '');
+        newname=join(['figures/' char(expdata.Label) '_plot_1b.png'], '');
         saveas(h2,newname)
     case 2
-        colours = ['r', 'g','b'];
-        
-        for n = 1:N   
-            y = (data(:,n,rgb) - min(data(:,n,rgb)))';
+        p_depths = 1:N_timepoints;
+        for t_idx = 1:N_timepoints   
+            expdata = df{t_idx,c_opt};
+
+            pd = expdata.PenDepth;
+            y = expdata.MeanIntensity;     
+            wp = expdata.WellPosn;
+            
             x = 1:length(y);
             total_length = length(y);
             xx = x;
             yy = y;
-            dy = diff(y);
+            
+            % use only from well posn
+            x = x(floor(wp*1.1):end);
+            y = y(floor(wp*1.1):end);
 
-            % get well
-            x = x(floor(i1):end);
-            y = y(floor(i1):end);
+            dy = diff(y);
 
             % plotting image
             subplot(3,1,1);
-            plot(x, y,'LineWidth', 1, 'Color', colours(rgb));
+            plot(x, y,'LineWidth', 1, 'Color', rgb(c_opt));
             hold on
             plot(xx, yy, 'LineWidth', 0.5, 'Color', 'k')
             yL = get(gca,'YLim');
             xL = length(xx);
-            line([i1 i1],yL,'LineWidth', 2, 'LineStyle', '--', 'Color', 'k')
-            line(xL.*[p_depth(n,rgb) p_depth(n,rgb)],yL,'LineWidth', 1.5, 'LineStyle', ':', 'Color', 'k');
+            line([wp wp],yL,'LineWidth', 2, 'LineStyle', '--', 'Color', 'k')
+            line(xL.*[pd pd],yL,'LineWidth', 1.5, 'LineStyle', ':', 'Color', 'k');
 
             subplot(3,1,2);
-            plot(dy, 'Color', colours(rgb));
+            plot(dy, 'Color', rgb(c_opt));
+
+            p_depths(t_idx) = pd;
             %ylim([-A, A])
             %pause(0.1)
         end
 
-        subplot(D,1,3);
-        plot(1:N, p_depth, '--o', 'LineWidth', 1.5,  'Color', colours(rgb));
+        subplot(N_channels,1,3);
+        plot(1:N_timepoints, p_depths, '--o', 'LineWidth', 1.5,  'Color', rgb(c_opt));
         xlabel('time (30mins)')
         ylabel('x')
         %ylim([p_depth(1), p_depth(end) + 1])
-        title(sprintf('Penetration depth is %g%%', 100*p_depth(end)/total_length))
+        title(sprintf('Penetration depth is %g%%', 100*p_depths(end)/total_length))
         %save_fig
-        newname=join([folder_name 'figures/' name '_plot_2.png'], '');
+        newname=join(['figures/' char(expdata.Label) '_plot_1b.png'], '');
         saveas(gcf,newname)
 end
 
