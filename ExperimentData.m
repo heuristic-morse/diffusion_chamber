@@ -3,7 +3,7 @@ classdef ExperimentData < handle
    properties (SetAccess = private)
       Path
       Label
-      NumChannels
+      ChannelNum
       TimePoint
       
       WellPosn
@@ -30,7 +30,7 @@ classdef ExperimentData < handle
       function DF = ExperimentData(df_path,label, channel, time)
          DF.Path = df_path;
          DF.Label= label;
-         DF.NumChannels= channel;
+         DF.ChannelNum= channel;
          DF.TimePoint= time;
          DF.LoadListener =  DataManager.addData(DF);
       end
@@ -63,16 +63,21 @@ classdef ExperimentData < handle
          end
       end
             
-      function setMeanIntensity(DF,mi)
+      function setMeanIntensity(DF)
+         if (strcmp(DF.LoadMsg,'No Data'))
+             mi = mean(imread(DF.Path));
+         else
+             mi = mean(DF.Data);
+         end
          DF.MeanIntensity= mi;
-         %TODO: add error catcher here
       end
       
-      function printInfo(DF)
+      function getInfo(DF)
          disp('-------------------------')
          disp(['Path: ',num2str(DF.Path)])
          disp(['Label: ',num2str(DF.Label)])
-         disp(['Number of Channels: ',num2str(DF.NumChannels)])
+         disp(['Channel Number: ',num2str(DF.ChannelNum)])
+         disp(['Timepoint: ',num2str(DF.TimePoint)])
          disp(['Data: ',DF.LoadMsg])
          wp = sprintf('%0.2f',DF.WellPosn);
          disp(['Well Position: ',wp])
@@ -81,7 +86,7 @@ classdef ExperimentData < handle
          disp('-------------------------')
       end
       
-      function printWellInfo(DF)
+      function getWellInfo(DF)
          disp('-------------------------')
          wp = sprintf('%0.2f',DF.WellPosn);
          disp(['Well Position: ',wp])
@@ -89,7 +94,7 @@ classdef ExperimentData < handle
          disp('-------------------------')
       end
       
-      function printPenDepthInfo(DF)
+      function getPenDepthInfo(DF)
          disp('-------------------------')
          pd = sprintf('%0.2f',DF.PenetrationDepth);
          disp(['Penetration Depth: ',pd])

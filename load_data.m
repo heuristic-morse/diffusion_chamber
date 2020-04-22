@@ -23,10 +23,13 @@ function df = load_data(folder_name, file_type)
         
         t_idx = str2double(file_name(end-idx:end-9));
         ch_idx = str2double(file_name(end-5:end-4));
-        path = join([folder_name, file_name]);
+        path = join([folder_name, file_name], '/');
         
-        df{t_idx+1,ch_idx+1 } = ExperimentData(path,file_name,ch_idx, t_idx);
-    
+        exp_data = ExperimentData(path,file_name,ch_idx, t_idx);
+        exp_data.setMeanIntensity();
+
+        df{t_idx+1, ch_idx+1} = exp_data;
+
         percentDone = 100 * n / length(files);
         msg = sprintf('%3.1f', percentDone); %Don't forget this semicolon
         fprintf([reverseStr, msg]);

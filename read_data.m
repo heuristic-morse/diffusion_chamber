@@ -2,8 +2,8 @@
 close all; clear all;
 
 % find all data folders in the directory
-data_dir = "L:/Wolfson Data/Microscopy Data Collection/TripleChip - Fluorescein/Chip 2/";
-%data_dir = "";
+%data_dir = "L:/Wolfson Data/Microscopy Data Collection/TripleChip - Fluorescein/Chip 2/";
+data_dir = "";
 folders = dir(join([data_dir "*001"], ""));
 
 % User inputs: 
@@ -19,10 +19,7 @@ threshold  = 0.2;%input(p4,'s');
 [N, ~] = size(folders);
 switch run_all    
     case 'y'
-    mean_intensity = {1:N};
     df = {1:N};
-    well_posn = 1:N;
-    pen_depth = {1:N};
     pct_change = {1:N};
     c_change = {1:N};
 
@@ -33,8 +30,9 @@ switch run_all
             disp(folder.name)
             sprintf('\nfolder name is %s', folder_name);
 
-            [mean_intensity{n}, label{n}] = load_data(folder_name, '/*.tif');
-            well_posn(n) = 1;%get_well_posn(mean_intensity{n}, 'y');
+            df{n} = load_data(folder_name, '/*.tif');
+            
+            get_well_posn(df{n}, 'y', 0);
             fcn = 'mean';
             [pen_depth{n}, pct_change{n}, c_change{n}]  = get_pen_depth(mean_intensity{n}, well_posn(n), threshold, fcn);
             if plot_opt == 'y'
@@ -60,7 +58,7 @@ switch run_all
         folder_name = join([data_dir folder_name], '');
         sprintf('folder name is %s', folder_name);
 
-        [mean_intensity, df] = load_data(folder_name, '/*.tif');
+        [mean_intensity, label] = load_data(folder_name, '/*.tif');
 end
 display(pen_depth{1,1})
 % clear everything except mean_intensity and df
