@@ -1,14 +1,12 @@
-function [mean_intensity, df] = load_data(folder_name, file_type)
+function df = load_data(folder_name, file_type)
 
     % find all files in dir that end with .jpg
     files = dir(join([folder_name, file_type], ''));
 
     % preload dataframe with all imagedata and mean_intensity 
     df = {};
-    mean_intensity = [];
 
     n = 1;
-    t_idx = 0;
     reverseStr = '';
     
     fprintf('Percent done: ');
@@ -16,7 +14,6 @@ function [mean_intensity, df] = load_data(folder_name, file_type)
     for file = files'
         file_name = file.name;
         sprintf('file_name is %s', file_name);
-        channel = imread(join([folder_name, file_name],'/'));
         
         if isa(class(file_name(end-10)),'char') == 1
             idx = 10;
@@ -26,9 +23,9 @@ function [mean_intensity, df] = load_data(folder_name, file_type)
         
         t_idx = str2double(file_name(end-idx:end-9));
         ch_idx = str2double(file_name(end-5:end-4));
-
-        df{n} = file_name;
-        mean_intensity(:,t_idx + 1, ch_idx + 1) = mean(channel(1:300, :))'; 
+        path = join([folder_name, file_name]);
+        
+        df{t_idx+1,ch_idx+1 } = ExperimentData(path,file_name,ch_idx, t_idx);
     
         percentDone = 100 * n / length(files);
         msg = sprintf('%3.1f', percentDone); %Don't forget this semicolon
