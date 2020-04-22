@@ -5,7 +5,7 @@ function df = get_pen_depth(df, threshold, fcn_name)
     for t_idx = 1:N_tp
         for ch_idx = 1:N_ch
             pd_data = [];
-            expdata = df{t_idx,ch_idx};
+            expdata = df(t_idx,ch_idx);
             
             % get specific data
 %           y = data(:,n,c)';

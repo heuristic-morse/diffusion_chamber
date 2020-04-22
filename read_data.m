@@ -60,7 +60,7 @@ switch run_all
 
         [mean_intensity, label] = load_data(folder_name, '/*.tif');
 end
-% clear everything except mean_intensity and df
-clearvars -except mean_intensity label well_posn pen_depth pct_change c_change
+% clear everything except df
+clearvars -except df
 
-save('chip1.mat','mean_intensity' ,'label' ,'well_posn', 'pen_depth' ,'pct_change' ,'c_change')
+save('chip1.mat','df')

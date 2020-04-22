@@ -3,7 +3,7 @@ function df = get_well_posn(df, threshold, run)
 [N_tp, N_ch] = size(df);
     for t_idx = 1:N_tp
         for ch_idx = 1:N_ch
-            expdata = df{t_idx,ch_idx};
+            expdata = df(t_idx,ch_idx);
 
             if run == 0
                expdata.setWellPosn(1);        

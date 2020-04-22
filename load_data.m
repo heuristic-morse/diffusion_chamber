@@ -3,8 +3,8 @@ function df = load_data(folder_name, file_type)
     % find all files in dir that end with .jpg
     files = dir(join([folder_name, file_type], ''));
 
-    % preload dataframe with all imagedata and mean_intensity 
-    df = {};
+    % preload dataframe for all imagedata 
+    df(1:16, 1:3) = ExperimentData(1,1,1,1);
 
     n = 1;
     reverseStr = '';
@@ -28,7 +28,7 @@ function df = load_data(folder_name, file_type)
         exp_data = ExperimentData(path,label(1),ch_idx, t_idx);
         exp_data.setMeanIntensity();
 
-        df{t_idx+1, ch_idx+1} = exp_data;
+        df(t_idx+1, ch_idx+1) = exp_data;
 
         percentDone = 100 * n / length(files);
         msg = sprintf('%3.1f', percentDone); %Don't forget this semicolon

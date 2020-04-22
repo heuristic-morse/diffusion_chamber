@@ -12,7 +12,7 @@ switch opt
             figure(h1)
             p_depths = 1:N_timepoints;
             for t_idx = 1:N_timepoints    
-                expdata = df{t_idx,ch_idx};
+                expdata = df(t_idx,ch_idx);
                 
             % plotting image
                 subplot(N_channels,1,ch_idx)
@@ -63,7 +63,7 @@ switch opt
     case 2
         p_depths = 1:N_timepoints;
         for t_idx = 1:N_timepoints   
-            expdata = df{t_idx,c_opt};
+            expdata = df(t_idx,c_opt);
 
             pd = expdata.PenDepth;
             y = expdata.MeanIntensity;     
