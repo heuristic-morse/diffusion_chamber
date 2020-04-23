@@ -1,21 +1,25 @@
+%TODO: 
+% Sort this out...
+% Build class of chip for easy access of expdata properties
+%for now - use getPropArray
 
 %% Calculate percentage change over all experiments
-colors = ['r', 'g', 'b'];
+rgb = ['r', 'g', 'b'];
 %'y' for % change, else, penetration depth in units
 pc_opt = 'y';
 
 % get data for bar charts
-exp_results = [];
-exp_labels = {};
 c_opt = [2 3];
-for i = 1:length(pen_depth)
+for n = 1:length(df)
+    [N_tp, N_ch] = size(df);
     if pc_opt == 'y'
-       first = pct_change{i}(1, c_opt)*100;
-       exp_results = horzcat(exp_results,pct_change{i}(end, c_opt)*100);% - first);
+        tmp = cell2mat(getPropArray(df{n},'PcntPenDepth'))*100;
+        exp_results(n,:) = tmp(end,:);
     else
-       exp_results = horzcat(exp_results,pen_depth{i}(end, c_opt));
+       tmp = cell2mat(getPropArray(df{n}, 'PenDepth'));
+       exp_results(n,:) = tmp(end,:);
     end
-    exp_labels{i} = horzcat(repmat([label{i}{1}(1:5),'  '],length(c_opt),1), colors(c_opt)');
+exp_labels{:, n} = join(['Run', string(n)]);% + "CH"+ string(getPropArray(df{1}, 'ChannelNum'));
 end
 
 %get colours for bar charts
@@ -26,22 +30,22 @@ end
 
 %plot colours for all experiments
 figure('Renderer', 'painters');
-m = 1;
 ax = gca;
-hb = bar(exp_results);
-hb.FaceColor = 'flat';
+hb = bar(exp_results(:, c_opt));
+%hb.FaceColor = 'flat';
 ax.XTickLabel = exp_labels;
 set(gcf,'color','w');    
-hb.CData(:,:) = repmat(base, length(pen_depth),1);
-
+for n = 1:length(c_opt)  
+    hb(n).FaceColor = rgb(c_opt(n));
+end
 ax.FontSize = 14;
-xticks([1:length(exp_results)])
+xticks([1:length(exp_results(:, c_opt))])
 xtickangle(45)
 yticks([0 20 40 60 80 100]);
-ytickformat('percentage');
+%ytickformat('Percentage');
 title('Penetration Depth of Dye/Particle, h=20%', 'FontSize', 24)
 
-%% getting triplicate data
+%% Getting triplicate data
 %number of independent exps (ie gels)
 n_gels = length(exp_results)/length(c_opt)/3;
 trp_mean = []; trp_std = [];trp_labels = {};
@@ -53,7 +57,7 @@ for n = 1:n_gels
     end
     trp_mean = horzcat(trp_mean, c_m);
     trp_std = horzcat(trp_std, c_std);
-    trp_labels{n} = horzcat(exp_labels{3*(n-1) + 1}(:,1:end-2), colors(c_opt)');
+%     trp_labels{n} = horzcat(exp_labels{3*(n-1) + 1}(:,1:end-2), rgb(c_opt)');
 end
 
 %plot colours for trip experiments
@@ -63,7 +67,7 @@ hb = bar(trp_mean);
 hb.FaceColor = 'flat';
 hold on
 errorbar(1:length(trp_mean), trp_mean,trp_std, 'or', 'MarkerSize', 8);
-ax.XTickLabel = trp_labels;
+%ax.XTickLabel = trp_labels;
 set(gcf,'color','w');    
 hb.CData(:,:) = repmat(base, length(trp_mean)/length(c_opt),1);
 
@@ -74,6 +78,9 @@ yticks([0 20 40 60 80 100]);
 ytickformat('percentage');
 title('Mean Penetration Depth of Dye/Particle, h=20%', 'FontSize', 24)
 
+
+
+%% %% %% TODO:
 % %% Calculate change in concentration
 % 
 % figure('Renderer', 'painters', 'Position', [500 500 800 1600]);
@@ -92,19 +99,19 @@ title('Mean Penetration Depth of Dye/Particle, h=20%', 'FontSize', 24)
 % end
 
 
-%% Fit Diffusion (green)
-X = (1:16)*0.5*3600;
-Y = pen_depth{1}(:,3)';
-[xData, yData] = prepareCurveData( X, Y );
-
-% Set up fittype and options.
-ft = fittype( 'sqrt(6*x*D)', 'independent', 'x', 'dependent', 'y' );
-opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
-opts.Display = 'Off';
-opts.StartPoint = 1e-10;
-
-% Fit model to data.
-[fitresult, gof] = fit( xData, yData, ft, opts );
-
-display(sprintf('diffusion is calculated as: %.2s cm^2/s', fitresult.D*1e4));
-display('diffusion of water is approx 2e-5cm^2/s');
+% %% Fit Diffusion (green)
+% X = (1:16)*0.5*3600;
+% Y = pen_depth{1}(:,3)';
+% [xData, yData] = prepareCurveData( X, Y );
+% 
+% % Set up fittype and options.
+% ft = fittype( 'sqrt(6*x*D)', 'independent', 'x', 'dependent', 'y' );
+% opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
+% opts.Display = 'Off';
+% opts.StartPoint = 1e-10;
+% 
+% % Fit model to data.
+% [fitresult, gof] = fit( xData, yData, ft, opts );
+% 
+% display(sprintf('diffusion is calculated as: %.2s cm^2/s', fitresult.D*1e4));
+% display('diffusion of water is approx 2e-5cm^2/s');

@@ -27,6 +27,7 @@ function df = load_data(folder_name, file_type)
         label = split(file_name, '0');
         exp_data = ExperimentData(path,label(1),ch_idx, t_idx);
         exp_data.setMeanIntensity();
+        exp_data.loadData();
 
         df(t_idx+1, ch_idx+1) = exp_data;
 
