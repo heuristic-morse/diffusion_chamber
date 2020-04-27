@@ -52,7 +52,12 @@ for ch_idx = 1:N_ch
                     pd_data(1) = i;
                 else        
                     x = x(i:end);
-                    pd_data(1) = min(x(avg_y(i:end) < h*1.05 & avg_y(i:end) > h*0.95));
+                    i2 = min(x(avg_y(i:end) < h*1.05 & avg_y(i:end) > h*0.95));
+                    if size(i2,2) == 0
+                        pd_data(1) = x(end);    
+                    else
+                        pd_data(1) = i2;
+                    end
                 end
         end       
         pd_data(2) = pd_data(1)/10e-3;
