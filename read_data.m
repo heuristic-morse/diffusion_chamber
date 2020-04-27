@@ -16,6 +16,13 @@ p3 = 'Plot which colour? (1=r, 2=g, 3=b)';
 rgb = 2;%input(p3,'s');
 p4 = 'Apply threshold? (type percentage as decimal';
 threshold  = 0.2;%input(p4,'s');
+load_prompt = 'y';
+
+if load_prompt == 'y'
+    prompt = '\nAre you sure you want to load all data? (y/n)';
+    load_prompt = input(prompt,'s');
+end
+        
 [N, ~] = size(folders);
 switch run_all    
     case 'y'
@@ -30,7 +37,7 @@ switch run_all
             disp(folder.name)
             sprintf('\nfolder name is %s', folder_name);
 
-            df{n} = load_data(folder_name, '/*.tif');
+            df{n} = load_data(folder_name, '/*.tif', load_prompt);
             
             get_well_posn(df{n}, 'y', 0);
             get_pen_depth(df{n}, threshold, 'diff');

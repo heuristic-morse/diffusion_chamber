@@ -1,4 +1,4 @@
-function df = load_data(folder_name, file_type)
+function df = load_data(folder_name, file_type, load_prompt)
 
     % find all files in dir that end with .jpg
     files = dir(join([folder_name, file_type], ''));
@@ -10,6 +10,7 @@ function df = load_data(folder_name, file_type)
     reverseStr = '';
     
     
+    fprintf('\nPercent done: ');
     for file = files'
         file_name = file.name;
         sprintf('file_name is %s', file_name);
@@ -26,11 +27,7 @@ function df = load_data(folder_name, file_type)
         label = split(file_name, '0');
         exp_data = ExperimentData(path,label(1),ch_idx, t_idx);
         exp_data.setMeanIntensity();
-        if exist('load_prompt', 'var') == 0
-            prompt = '\nAre you sure you want to load all data? (y/n)';
-            load_prompt = input(prompt,'s');
-            fprintf('\nPercent done: ');
-        end
+
         if load_prompt == 'y'
             exp_data.loadData();
         end
@@ -44,5 +41,6 @@ function df = load_data(folder_name, file_type)
         
         n = n+1;
     end
+   
 end
 
