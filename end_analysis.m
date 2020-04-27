@@ -82,7 +82,8 @@ title('Mean Penetration Depth of Dye/Particle, h=diff', 'FontSize', 24)
 
 
 %% %% %% TODO:
-% %% Calculate change in concentration
+% %% Calculate change in concentration - uncomment trapz in get_pen_depth
+% to run
 % 
 % figure('Renderer', 'painters', 'Position', [500 500 800 1600]);
 % 

@@ -8,19 +8,18 @@ for ch_idx = 1:N_ch
     for t_idx = 1:N_tp
         pd_data = [];
         expdata = df(t_idx,ch_idx);
+        y = expdata.MeanIntensity;           
+        % get specific data
+        L = length(y);
+        wp = expdata.WellPosn;
+        x = (1:L)*(10e-3/L);
+
+        % remove well posn
+        x = x(floor(wp*1.1):end);
+        y = y(floor(wp*1.1):end);
         
         switch fcn_name
             case 'mean'   
-                % get specific data
-                y = expdata.MeanIntensity;           
-                L = length(y);
-                wp = expdata.WellPosn;
-                x = (1:L)*(10e-3/L);
-
-                % remove well posn
-                x = x(floor(wp*1.1):end);
-                y = y(floor(wp*1.1):end);
-
                 % consider only x greater than location of peak intensity
                 [~, i] =  max(y);
 
@@ -44,7 +43,7 @@ for ch_idx = 1:N_ch
                 %initial peak
                 
                 %first calculates moving average (where window size = 1000) 
-                avg_y = movmean(expdata.MeanIntensity, 1000);
+                avg_y = movmean(y, 1000);
                 x = 1:length(avg_y);
                 if t_idx == 1
                     % calculates the minimum of the first derivative
@@ -57,7 +56,7 @@ for ch_idx = 1:N_ch
                 end
         end       
         pd_data(2) = pd_data(1)/10e-3;
-        pd_data(3) = trapz(y);
+%        pd_data(3) = trapz(y);
 
        expdata.setPenData(pd_data, fcn_name);
     end
