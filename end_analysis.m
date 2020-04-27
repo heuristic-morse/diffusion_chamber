@@ -3,6 +3,7 @@
 % Build class of chip for easy access of expdata properties
 %for now - use getPropArray
 
+load('chip3.mat');
 %% Calculate percentage change over all experiments
 rgb = ['r', 'g', 'b'];
 %'y' for % change, else, penetration depth in units
@@ -11,7 +12,7 @@ pc_opt = 'y';
 % get data for bar charts
 c_opt = [2 3];
 for n = 1:length(df)
-    [N_tp, N_ch] = size(df);
+    [N_tp, N_ch] = size(df{n});
     if pc_opt == 'y'
         tmp = cell2mat(getPropArray(df{n},'PcntPenDepth'))*100;
         exp_results(n,:) = tmp(end,:);
