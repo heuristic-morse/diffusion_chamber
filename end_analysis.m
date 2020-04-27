@@ -3,7 +3,7 @@
 % Build class of chip for easy access of expdata properties
 %for now - use getPropArray
 
-load('chip3.mat');
+load('chip1.mat');
 %% Calculate percentage change over all experiments
 rgb = ['r', 'g', 'b'];
 %'y' for % change, else, penetration depth in units
@@ -44,7 +44,7 @@ xticks([1:length(exp_results(:, c_opt))])
 xtickangle(45)
 yticks([0 20 40 60 80 100]);
 %ytickformat('Percentage');
-title('Penetration Depth of Dye/Particle, h=20%', 'FontSize', 24)
+title('Penetration Depth of Dye/Particle, h=diff', 'FontSize', 24)
 
 %% Getting triplicate data
 %number of independent exps (ie gels)
@@ -77,7 +77,7 @@ xticks([1:length(exp_results)])
 xtickangle(45)
 yticks([0 20 40 60 80 100]);
 ytickformat('percentage');
-title('Mean Penetration Depth of Dye/Particle, h=20%', 'FontSize', 24)
+title('Mean Penetration Depth of Dye/Particle, h=diff', 'FontSize', 24)
 
 
 

@@ -33,7 +33,7 @@ switch run_all
             df{n} = load_data(folder_name, '/*.tif');
             
             get_well_posn(df{n}, 'y', 0);
-            get_pen_depth(df{n}, threshold, 'mean');
+            get_pen_depth(df{n}, threshold, 'diff');
             
             if plot_opt == 'y'
                 plot_data(df, 1, rgb); %plot_1
