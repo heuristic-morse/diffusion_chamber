@@ -9,7 +9,6 @@ function df = load_data(folder_name, file_type)
     n = 1;
     reverseStr = '';
     
-    fprintf('Percent done: ');
     
     for file = files'
         file_name = file.name;
@@ -27,7 +26,14 @@ function df = load_data(folder_name, file_type)
         label = split(file_name, '0');
         exp_data = ExperimentData(path,label(1),ch_idx, t_idx);
         exp_data.setMeanIntensity();
-        exp_data.loadData();
+        if exist('load_prompt', 'var') == 0
+            prompt = '\nAre you sure you want to load all data? (y/n)';
+            load_prompt = input(prompt,'s');
+            fprintf('\nPercent done: ');
+        end
+        if load_prompt == 'y'
+            exp_data.loadData();
+        end
 
         df(t_idx+1, ch_idx+1) = exp_data;
 
