@@ -70,7 +70,7 @@ classdef ExperimentData < handle
         function setPenData(DF,pd, fcn)
             DF.PenDepth= pd(1);
             DF.PcntPenDepth= pd(2);
-            DF.ConcChange= pd(3);
+%            DF.ConcChange= pd(3);
             
             DF.PenData = sprintf('Penetration depth calculated using fcn "%s"', fcn);           
         end   
