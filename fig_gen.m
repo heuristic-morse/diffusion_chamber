@@ -163,34 +163,43 @@ for c = 1:length(chips)
     end
 end
 %% Comparison of data
-chips  = {'chip1','chip2','chip3'};
-c_opt = 3;
-for t = 1:length(thresholds)
-    h = figure('units','normalized','outerposition',[0.5 0.5 0.6 0.6]);
-    idx = 1;
-    for c = 1:length(chips)
-        chip = chips{c};
-        load(sprintf('%s.mat', chip));
-        for n = 1:length(df)
-            get_pen_depth(df{n}, thresholds(t), 'mean');
-            tmp = cell2mat(getPropArray(df{n},'PcntPenDepth'));
-            exp_results(idx) = tmp(end,c_opt);
-            chip_data = split(df{n}(1,1).Label,'_');
-            run_label = chip_data{2};
-            chip_data = split(run_label, ' ');
-            exp_label(idx) = chip_data(1);
-            idx = idx +1;
-        end
+for c = 2:3
+    if c == 3
+        color = 'blue';
+        c_min = 0;
+    elseif c==2
+        color = 'green';
+        c_min = 80;
     end
-     boxplot(exp_results,exp_label)
-    title_str = sprintf('Boxplot for all penetration data (threshold=%d%%)',thresholds(t)*100);
-    title(title_str);
-    ylim([0,100])
-    xlabel('Chip data');
-    ytickformat('percentage');
-    ylabel('Penetration Depth (%)')
-    ax=gca;
-    ax.FontSize = 18;
-    saveas(h,sprintf('boxplot_th_%g.png',t))
-    close();
+
+    for t = 1:length(thresholds)
+        h = figure('units','normalized','outerposition',[0.5 0.5 0.6 0.6]);
+        idx = 1;
+        for ch = 1:length(chips)
+            chip = chips{ch};
+            load(sprintf('%s.mat', chip));
+            for n = 1:length(df)
+                get_pen_depth(df{n}, thresholds(t), 'mean');
+                tmp = cell2mat(getPropArray(df{n},'PcntPenDepth'));
+                exp_results(idx) = tmp(end,c);
+                chip_data = split(df{n}(1,1).Label,'_');
+                run_label = chip_data{2};
+                chip_data = split(run_label, ' ');
+                exp_label(idx) = chip_data(1);
+                idx = idx +1;
+            end
+        end
+
+         boxplot(exp_results,exp_label)
+        title_str = sprintf('Boxplot for all penetration data (threshold=%d%%, color=%s)',thresholds(t)*100, color);
+        title(title_str);
+        ylim([c_min,100])
+        xlabel('Chip data');
+        ytickformat('percentage');
+        ylabel('Penetration Depth (%)')
+        ax=gca;
+        ax.FontSize = 18;
+        saveas(h,sprintf('boxplot_th_%g (%s).png',t, color))
+        close();
+    end
 end
