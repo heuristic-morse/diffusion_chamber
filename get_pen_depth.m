@@ -1,6 +1,5 @@
 function df = get_pen_depth(df, threshold, fcn_name)
     
-    
 [N_tp, N_ch] = size(df);
 %TODO: Check influence of removing T0 from all data. 
 
@@ -9,33 +8,31 @@ for ch_idx = 1:N_ch
         pd_data = [];
         expdata = df(t_idx,ch_idx);
         y = expdata.MeanIntensity;           
+        x = 1:length(y);
         % get specific data
-        L = length(y);
         wp = expdata.WellPosn;
-        x = (1:L)*(10e-3/L);
 
-        % remove well posn
-        x = x(floor(wp*1.1):end);
-        y = y(floor(wp*1.1):end);
+%         % remove well posn
+         x = x(wp:end);
+         y = y(wp:end);
         
         switch fcn_name
             case 'mean'   
-                % consider only x greater than location of peak intensity
-                [~, i] =  max(y);
-
                 % normalise y to avoid thresholding errors
-                y = (y(i:end) - min(y))/max(y);
-                x = x(i:end);
+                y = movmean(y, 1000);
+                y = (y - min(y))/max(y- min(y));
 
                 % get penetration depth
                 % change to mean or min for debugging, 
-                i2 = feval(fcn_name,x(y < max(y)*threshold));
+                [my, mx] = max(y);
+                tmp = x((x > mx) & (y > my*0.99*threshold) & (y < my*1.01*threshold));
+                i2 = round(feval('min',tmp));
                 %[i2, ~] = max(x((y > floor(max(y)*threshold)) & (y < ceil(max(y)*threshold))));
 
                 if size(i2,2) == 0
-                    pd_data(1) = x(end);    
+                    pd_data(1) = x(end)/length(x);    
                 else
-                    pd_data(1)= i2;
+                    pd_data(1)= i2/length(x);
                 end
 
         case 'diff'

@@ -2,17 +2,30 @@
 % Sort this out...
 % Build class of chip for easy access of expdata properties
 %for now - use getPropArray
+chip  = 'chip1';
+load(sprintf('%s.mat', chip));
 
-load('chip1.mat');
+for n = 1:length(df)
+    threshold = 0.3;
+    get_pen_depth(df{n}, threshold, 'mean');
+end
+            
 %% Calculate percentage change over all experiments
+if length(df) == 1
+    disp("sure this is correct chip?");
+    pause();
+end
+
 rgb = ['r', 'g', 'b'];
 %'y' for % change, else, penetration depth in units
 pc_opt = 'y';
 
 % get data for bar charts
 c_opt = [2 3];
+
+exp_results = [];
 for n = 1:length(df)
-    [N_tp, N_ch] = size(df{n});
+    [N_exp, N_ch] = size(df{n});
     if pc_opt == 'y'
         tmp = cell2mat(getPropArray(df{n},'PcntPenDepth'))*100;
         exp_results(n,:) = tmp(end,:);
@@ -20,8 +33,55 @@ for n = 1:length(df)
        tmp = cell2mat(getPropArray(df{n}, 'PenDepth'));
        exp_results(n,:) = tmp(end,:);
     end
-exp_labels{:, n} = join(['Run', string(n)]);% + "CH"+ string(getPropArray(df{1}, 'ChannelNum'));
+    exp_label{:, n} = join(['Run', string(n)]);% + "CH"+ string(getPropArray(df{1}, 'ChannelNum'));    
+    chip_data = split(df{n}(1,1).Label,'_');
+    chip_label{n} = chip_data{1};
+    run_label{n} = chip_data{2};
 end
+%get colours for bar charts
+base = repmat([0 0 0], length(c_opt),1);
+for n = 1:length(c_opt)
+    base(n, c_opt(n)) = 1;    
+end
+
+%plot colours for all experiments
+figure('Renderer', 'painters');
+ax = gca;
+hb = bar(exp_results(:, c_opt));
+%hb.FaceColor = 'flat';
+ax.XTickLabel = run_label;
+set(gcf,'color','w');    
+for n = 1:length(c_opt)  
+    hb(n).FaceColor = rgb(c_opt(n));
+end
+ax.FontSize = 14;
+xticks([1:length(exp_results(:, c_opt))])
+xtickangle(45)
+yticks([0 20 40 60 80 100]);
+ylabel('Penetration Depth of Dye/Particle (%)');
+title_str = sprintf('%s (threshold=%d%%)',chip_label{1}, threshold*100);
+title(title_str, 'FontSize', 24)
+
+
+%% Calculate percentage change over time over all experiments
+rgb = ['r', 'g', 'b'];
+%'y' for % change, else, penetration depth in units
+pc_opt = 'y';
+
+% get data for bar charts
+c_opt = [2 3];
+for n = 1:length(df)
+    [N_exp, N_ch] = size(df{n});
+    if pc_opt == 'y'
+        exp_results = cell2mat(getPropArray(df{n},'PcntPenDepth'))*100;
+%         exp_results(n,:) = tmp(end,:);
+    else
+       exp_results = cell2mat(getPropArray(df{n}, 'PenDepth'));
+%        exp_results(n,:) = tmp(end,:);
+    end
+    for i = 1:N_exp
+        exp_labels{:, i} = join(['Run', string(i)]);% + "CH"+ string(getPropArray(df{1}, 'ChannelNum'));
+    end
 
 %get colours for bar charts
 base = repmat([0 0 0], length(c_opt),1);
@@ -44,7 +104,8 @@ xticks([1:length(exp_results(:, c_opt))])
 xtickangle(45)
 yticks([0 20 40 60 80 100]);
 %ytickformat('Percentage');
-title('Penetration Depth of Dye/Particle, h=diff', 'FontSize', 24)
+title('Penetration Depth of Dye/Particle, h=mean', 'FontSize', 24)
+end
 
 %% Getting triplicate data
 %number of independent exps (ie gels)
@@ -77,7 +138,7 @@ xticks([1:length(exp_results)])
 xtickangle(45)
 yticks([0 20 40 60 80 100]);
 ytickformat('percentage');
-title('Mean Penetration Depth of Dye/Particle, h=diff', 'FontSize', 24)
+title('Mean Penetration Depth of Dye/Particle, h=mean', 'FontSize', 24)
 
 
 

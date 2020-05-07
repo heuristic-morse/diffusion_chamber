@@ -1,5 +1,4 @@
 function df = get_well_posn(df, threshold, run)
-
 [N_tp, N_ch] = size(df);
 
 for t_idx = 1:N_tp
