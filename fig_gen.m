@@ -1,6 +1,6 @@
 chips  = {'chip1','chip2','chip3'};
-for c = 1:length(chips)
-    chip = chips{c};
+for ch = 1:length(chips)
+    chip = chips{ch};
     load(sprintf('%s.mat', chip));
 
     %% plot all data at end timepoint
@@ -12,9 +12,11 @@ for c = 1:length(chips)
         subplot(4,3, 4*m + n)
         for c = 1:3
             y = df{4*m + n}(end,c).MeanIntensity;
-
-            y = (y - min(y))/max(y- min(y));
             avg_y = movmean(y, 1000);     
+            
+            %normalise here
+            y = (y - min(y))/max(y- min(y));
+            avg_y = (avg_y - min(avg_y))/max(avg_y- min(avg_y));
             plot(y, rgb(c));
             hold on
             plot(avg_y, rgb(c), 'LineStyle', '--', 'LineWidth', 1);
@@ -43,7 +45,7 @@ for c = 1:length(chips)
         h = figure('units','normalized','outerposition',[0 0 1 1]);
         for m = 0:2
             for n = 1:4
-            subplot(4,3, 4*m + n)
+           subplot(4,3, 4*m + n)
             y = df{4*m + n}(end,c).MeanIntensity;
 
             y = movmean(y, 1000);     
@@ -54,8 +56,8 @@ for c = 1:length(chips)
             chip_data = split(df{4*m + n}(1,1).Label,'_');
             title(sprintf('%s (Run %g)',chip_data{2}, 4*m + n))
             for t = 1:length(thresholds)
-                get_pen_depth(df{4*m + n}, thresholds(t), 'mean');
-                xline(df{4*m + n}(end,c).PcntPenDepth*100, '--k','LineWidth', 2);
+                get_pen_depth(df{4*m + n}, thresholds(t), 'intcp');
+                xline(df{4*m + n}(end,c).PcntPenDepth*length(y), '--k','LineWidth', 2);
                 yline(thresholds(t), ':k','LineWidth', 1);
                 hold on
             end
@@ -84,13 +86,13 @@ for c = 1:length(chips)
     % get data for bar charts
     c_opt = [2 3];
     for t = 1:length(thresholds)
-
+        run_label = {};
         exp_results = [];
         for n = 1:length(df)
-            get_pen_depth(df{n}, thresholds(t), 'mean');
+            get_pen_depth(df{n}, thresholds(t), 'intcp');
             [N_exp, N_ch] = size(df{n});
             tmp = cell2mat(getPropArray(df{n},'PcntPenDepth'));
-            exp_results(n,:) = tmp(end,:);
+            exp_results(n,:) = tmp(end,:)*100;
             exp_label{:, n} = join(['Run', string(n)]);% + "CH"+ string(getPropArray(df{1}, 'ChannelNum'));    
             chip_data = split(df{n}(1,1).Label,'_');
             chip_label{n} = chip_data{1};
@@ -116,6 +118,8 @@ for c = 1:length(chips)
         xticks([1:length(exp_results(:, c_opt))])
         xtickangle(45)
         yticks([0 20 40 60 80 100]);
+        ylim([0 100]);
+        ytickformat('percentage');
         ylabel('Penetration Depth of Dye/Particle (%)');
         title_str = sprintf('%s (threshold=%d%%)',chip_label{1}, thresholds(t)*100);
         title(title_str, 'FontSize', 24)
@@ -152,6 +156,7 @@ for c = 1:length(chips)
         ax.FontSize = 14;
         xticks([1:length(exp_results)])
         xtickangle(45)
+        ylim([0 100]);
         yticks([0 20 40 60 80 100]);
         ytickformat('percentage');
         ylabel('Mean Penetration Depth (%)');
@@ -179,8 +184,8 @@ for c = 2:3
             chip = chips{ch};
             load(sprintf('%s.mat', chip));
             for n = 1:length(df)
-                get_pen_depth(df{n}, thresholds(t), 'mean');
-                tmp = cell2mat(getPropArray(df{n},'PcntPenDepth'));
+                get_pen_depth(df{n}, thresholds(t), 'intcp');
+                tmp = cell2mat(getPropArray(df{n},'PcntPenDepth'))*100;
                 exp_results(idx) = tmp(end,c);
                 chip_data = split(df{n}(1,1).Label,'_');
                 run_label = chip_data{2};
