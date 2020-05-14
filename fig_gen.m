@@ -2,40 +2,80 @@ chips  = {'chip1','chip2','chip3'};
 for ch = 1:length(chips)
     chip = chips{ch};
     load(sprintf('%s.mat', chip));
-
     %% plot all data at end timepoint
     rgb = ['r', 'g', 'b'];
-
+    x1 = 2000; x2 = 8500;
     h = figure('units','normalized','outerposition',[0 0 1 1]);
     for m = 0:2
         for n = 1:4
         subplot(4,3, 4*m + n)
         for c = 1:3
             y = df{4*m + n}(end,c).MeanIntensity;
+
             avg_y = movmean(y, 1000);     
-            
+            x = 1:length(y);
             %normalise here
             y = (y - min(y))/max(y- min(y));
             avg_y = (avg_y - min(avg_y))/max(avg_y- min(avg_y));
-            plot(y, rgb(c));
+            plot(x, y, rgb(c));
             hold on
-            plot(avg_y, rgb(c), 'LineStyle', '--', 'LineWidth', 1);
+            xline(x1, 'k','LineWidth', 2);
+            xline(x2, 'k','LineWidth', 2);
+            plot(x, avg_y, rgb(c), 'LineStyle', '--', 'LineWidth', 1);
         end
         chip_data = split(df{4*m + n}(1,1).Label,'_');
         title(sprintf('%s - %s (Run %g)',chip_data{1},chip_data{2}, 4*m + n))
-    %     xline(df{4*m + n}(end,3).PcntPenDepth*10000, 'k','LineWidth', 2);
+        xlim([0 10000]);
         ax = gca;
         ax.FontSize = 18;
+        
         end
     end
     [ax1,h1]=suplabel('Distance (a.u)');
     [ax2,h2]=suplabel('Intensity (a.u)', 'y');
     set(h1,'FontSize',20)
     set(h2,'FontSize',20)
+    tightfig()            
+    saveas(h,sprintf('%s_raw_data.png',chip))
+    close;
 
+    
+    %% plot all data at end timepoint
+    rgb = ['r', 'g', 'b'];
+    x1 = 2000; x2 = 8500;
+    h = figure('units','normalized','outerposition',[0 0 1 1]);
+    for m = 0:2
+        for n = 1:4
+        subplot(4,3, 4*m + n)
+        for c = 1:3
+            y = df{4*m + n}(end,c).MeanIntensity;
+            y = y(x1:x2);
+
+            avg_y = movmean(y, 1000);     
+            x = 1:length(y);
+            %normalise here
+            y = (y - min(y))/max(y- min(y));
+            avg_y = (avg_y - min(avg_y))/max(avg_y- min(avg_y));
+            plot(x, y, rgb(c));
+            hold on
+            %xline(x1, 'k','LineWidth', 2);
+            %xline(x2, 'k','LineWidth', 2);
+            plot(x, avg_y, rgb(c), 'LineStyle', '--', 'LineWidth', 1);
+        end
+        chip_data = split(df{4*m + n}(1,1).Label,'_');
+        title(sprintf('%s - %s (Run %g)',chip_data{1},chip_data{2}, 4*m + n))
+        xlim([0 L]);
+        ax = gca;
+        ax.FontSize = 18;
+        
+        end
+    end
+    [ax1,h1]=suplabel('Distance (a.u)');
+    [ax2,h2]=suplabel('Intensity (a.u)', 'y');
+    set(h1,'FontSize',20)
+    set(h2,'FontSize',20)
     tightfig()            
     saveas(h,sprintf('%s_comp_all_data.png',chip))
-    % print(h,'-dtiff', sprintf('%s_comp_all_data.tiff',chip))
     close;
 
     %% plot color with threshold at end timepoint
@@ -47,20 +87,23 @@ for ch = 1:length(chips)
             for n = 1:4
            subplot(4,3, 4*m + n)
             y = df{4*m + n}(end,c).MeanIntensity;
-
+            y = y(x1:x2);
             y = movmean(y, 1000);     
             y = (y - min(y))/max(y- min(y));
-
-            plot(y, rgb(c), 'LineStyle', '--', 'LineWidth', 1);
+            x = 1:length(y);
+            plot(x, y, rgb(c), 'LineStyle', '--', 'LineWidth', 1);          
+           % xline(x1, 'k','LineWidth', 2);
+           % xline(x2, 'k','LineWidth', 2);
             hold on
             chip_data = split(df{4*m + n}(1,1).Label,'_');
             title(sprintf('%s (Run %g)',chip_data{2}, 4*m + n))
             for t = 1:length(thresholds)
                 get_pen_depth(df{4*m + n}, thresholds(t), 'intcp');
-                xline(df{4*m + n}(end,c).PcntPenDepth*length(y), '--k','LineWidth', 2);
+                xline(df{4*m + n}(end,c).PcntPenDepth*L, '--k','LineWidth', 2);
                 yline(thresholds(t), ':k','LineWidth', 1);
                 hold on
             end
+            xlim([0 L]);
             ax = gca;
             ax.FontSize = 14;
             end
@@ -174,7 +217,7 @@ for c = 2:3
         c_min = 0;
     elseif c==2
         color = 'green';
-        c_min = 80;
+        c_min = 0;
     end
 
     for t = 1:length(thresholds)

@@ -2,23 +2,27 @@ function df = get_pen_depth(df, threshold, fcn_name)
     
 [N_tp, N_ch] = size(df);
 %TODO: Check influence of removing T0 from all data. 
+x1 = 2000;
+x2 = 8500;
+L = x2 - x1;
 
-for c_idx = 1:N_ch
+x = 1:L;
+for c_idx = 2:N_ch
     for t_idx = 1:N_tp
         pd_data = [];
         expdata = df(t_idx,c_idx);
-        y = expdata.MeanIntensity;           
-        x = 1:length(y);
+        y = expdata.MeanIntensity;
         % get specific data
         wp = expdata.WellPosn;
 
-%         % remove well posn
-         x = x(wp:end);
-         y = y(wp:end);
+%         % remove well posn <- do this explicitly through x1,x2 
+%          x = x(wp:end);
+%          y = y(wp:end);
         
         switch fcn_name
             case 'intcp'   
                 % normalise y to avoid thresholding errors
+                y = y(x1:x2);
                 y = movmean(y, 1000);
                 y = (y - min(y))/max(y- min(y));
 
@@ -46,14 +50,12 @@ for c_idx = 1:N_ch
                 
                 %first calculates moving average (where window size = 1000) 
                 avg_y = movmean(y, 1000);
-                x = 1:length(avg_y);
                 if t_idx == 1
                     % calculates the minimum of the first derivative
                     [~, i] = min(feval(fcn_name,avg_y ));
                     h = avg_y (i);
                     pd_data(1) = i;
                 else        
-                    x = x(i:end);
                     i2 = min(x(avg_y(i:end) < h*1.05 & avg_y(i:end) > h*0.95));
                     if size(i2,2) == 0
                         pd_data(1) = x(end);    
@@ -62,7 +64,7 @@ for c_idx = 1:N_ch
                     end
                 end
         end       
-        pd_data(2) = pd_data(1)/length(y);
+        pd_data(2) = pd_data(1)/L;
 %        pd_data(3) = trapz(y);
 
        expdata.setPenData(pd_data, fcn_name);
