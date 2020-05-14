@@ -2,7 +2,7 @@ function df = get_pen_depth(df, threshold, fcn_name)
     
 [N_tp, N_ch] = size(df);
 %TODO: Check influence of removing T0 from all data. 
-x1 = 2000;
+x1 = 1500;
 x2 = 8500;
 L = x2 - x1;
 

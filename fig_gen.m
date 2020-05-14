@@ -4,7 +4,7 @@ for ch = 1:length(chips)
     load(sprintf('%s.mat', chip));
     %% plot all data at end timepoint
     rgb = ['r', 'g', 'b'];
-    x1 = 2000; x2 = 8500;
+    x1 = 1500; x2 = 8500;
     h = figure('units','normalized','outerposition',[0 0 1 1]);
     for m = 0:2
         for n = 1:4
@@ -42,7 +42,7 @@ for ch = 1:length(chips)
     
     %% plot all data at end timepoint
     rgb = ['r', 'g', 'b'];
-    x1 = 2000; x2 = 8500;
+    x1 = 1500; x2 = 8500;
     h = figure('units','normalized','outerposition',[0 0 1 1]);
     for m = 0:2
         for n = 1:4
