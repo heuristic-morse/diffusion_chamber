@@ -1,8 +1,8 @@
-ch = 'chip3.mat';
+ch = 'chip1.mat';
 plt_opt = 'n';
 
 load(ch);
-c = 3;
+c = 2;
 color = {'red', 'green', 'blue'};
 for i = 1:12
     % print out of which chip and experiment number for debugging
