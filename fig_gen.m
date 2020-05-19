@@ -1,4 +1,9 @@
 chips  = {'chip1','chip2','chip3'};
+outliers = zeros(12,3);
+outliers(2,1) = 1;
+outliers([2,3,6],2) = 1;
+outliers([2,3],3) = 1;
+
 for ch = 1:length(chips)
     chip = chips{ch};
     load(sprintf('%s.mat', chip));
@@ -8,27 +13,27 @@ for ch = 1:length(chips)
     h = figure('units','normalized','outerposition',[0 0 1 1]);
     for m = 0:2
         for n = 1:4
-        subplot(4,3, 4*m + n)
-        for c = 1:3
-            y = df{4*m + n}(end,c).MeanIntensity;
+            subplot(4,3, 4*m + n)
+            for c = 1:3
+                y = df{4*m + n}(end,c).MeanIntensity;
 
-            avg_y = movmean(y, 1000);     
-            x = 1:length(y);
-            %normalise here
-            y = (y - min(y))/max(y- min(y));
-            avg_y = (avg_y - min(avg_y))/max(avg_y- min(avg_y));
-            plot(x, y, rgb(c));
-            hold on
-            xline(x1, 'k','LineWidth', 2);
-            xline(x2, 'k','LineWidth', 2);
-            plot(x, avg_y, rgb(c), 'LineStyle', '--', 'LineWidth', 1);
-        end
-        chip_data = split(df{4*m + n}(1,1).Label,'_');
-        title(sprintf('%s - %s (Run %g)',chip_data{1},chip_data{2}, 4*m + n))
-        xlim([0 10000]);
-        ax = gca;
-        ax.FontSize = 18;
-        
+                avg_y = movmean(y, 1000);     
+                x = 1:length(y);
+                %normalise here
+                y = (y - min(y))/max(y- min(y));
+                avg_y = (avg_y - min(avg_y))/max(avg_y- min(avg_y));
+                plot(x, y, rgb(c));
+                hold on
+                xline(x1, 'k','LineWidth', 2);
+                xline(x2, 'k','LineWidth', 2);
+                plot(x, avg_y, rgb(c), 'LineStyle', '--', 'LineWidth', 1);
+            end
+            chip_data = split(df{4*m + n}(1,1).Label,'_');
+            title(sprintf('%s - %s (Run %g)',chip_data{1},chip_data{2}, 4*m + n))
+            xlim([0 10000]);
+            ax = gca;
+            ax.FontSize = 18;
+
         end
     end
     [ax1,h1]=suplabel('Distance (a.u)');
@@ -132,14 +137,16 @@ for ch = 1:length(chips)
         run_label = {};
         exp_results = [];
         for n = 1:length(df)
-            get_pen_depth(df{n}, thresholds(t), 'intcp');
-            [N_exp, N_ch] = size(df{n});
-            tmp = cell2mat(getPropArray(df{n},'PcntPenDepth'));
-            exp_results(n,:) = tmp(end,:)*100;
-            exp_label{:, n} = join(['Run', string(n)]);% + "CH"+ string(getPropArray(df{1}, 'ChannelNum'));    
-            chip_data = split(df{n}(1,1).Label,'_');
-            chip_label{n} = chip_data{1};
-            run_label{n} = chip_data{2};
+            if outliers(n,ch) == 1
+                get_pen_depth(df{n}, thresholds(t), 'intcp');
+                [N_exp, N_ch] = size(df{n});
+                tmp = cell2mat(getPropArray(df{n},'PcntPenDepth'));
+                exp_results(n,:) = tmp(end,:)*100;
+                exp_label{:, n} = join(['Run', string(n)]);% + "CH"+ string(getPropArray(df{1}, 'ChannelNum'));    
+                chip_data = split(df{n}(1,1).Label,'_');
+                chip_label{n} = chip_data{1};
+                run_label{n} = chip_data{2};
+            end
         end
         %get colours for bar charts
         base = repmat([0 0 0], length(c_opt),1);
@@ -162,7 +169,7 @@ for ch = 1:length(chips)
         xtickangle(45)
         yticks([0 20 40 60 80 100]);
         ylim([0 100]);
-        ytickformat('percentage');
+        ytickformat('Percentage');
         ylabel('Penetration Depth of Dye/Particle (%)');
         title_str = sprintf('%s (threshold=%d%%)',chip_label{1}, thresholds(t)*100);
         title(title_str, 'FontSize', 24)
@@ -238,7 +245,7 @@ for c = 2:3
             end
         end
 
-         boxplot(exp_results,exp_label)
+        boxplot(exp_results,exp_label)
         title_str = sprintf('Boxplot for all penetration data (threshold=%d%%, color=%s)',thresholds(t)*100, color);
         title(title_str);
         ylim([c_min,100])

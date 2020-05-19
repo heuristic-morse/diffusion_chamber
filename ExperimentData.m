@@ -118,14 +118,16 @@ classdef ExperimentData < handle
          disp('-------------------------')
       end
    end
-   methods (Static)
+   methods (Static) % this works but doesn't follow proper syntax...
       function obj = loadobj(s)
          if isstruct(s)
             DF.Path = s.path;
             DF.Label= s.label;
             DF.NumChannels= s.channel;
          else
-            obj.LoadListener = DataManager.addData(s);
+            obj = s;
+
+%             obj.LoadListener = DataManager.addData(s);
          end
       end
    end
