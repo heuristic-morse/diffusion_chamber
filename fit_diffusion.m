@@ -106,7 +106,7 @@ end
 h = figure('units','normalized','outerposition',[0.5 0.5 0.6 0.6]);
 boxplot(D)
 xlabel('Experiment');
-ylabel('D (m^2/s)');
+ylabel('D (um^2/s)');
 ax = gca;
 ax.FontSize = 18;
             
