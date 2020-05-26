@@ -112,7 +112,8 @@ color = {'red', 'green', 'blue'};
             % Save diffusion 
             D(ti, idx) = fitresult.D;
 
-            if plt_opt == 'y'
+            if plt_opt == 'y' && check_run(i, ch) == 1
+
                 % Plot data
                 plot(x, y(ti,:), 'k');
                 hold on
@@ -146,8 +147,8 @@ color = {'red', 'green', 'blue'};
     end
 end
 %% Create box plot of diffusion per run
-h4 = figure('units','normalized','outerposition',[0.5 0.5 0.6 0.6]);
-boxplot(D(4:end,:), run_label)
+h = figure('units','normalized','outerposition',[0.5 0.5 0.6 0.6]);
+boxplot(D(1:end,:), run_label)
 xlabel('Experiment');
 ylabel('D (um^2/s)');
 ax = gca;
