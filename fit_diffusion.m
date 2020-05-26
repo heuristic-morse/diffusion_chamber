@@ -14,11 +14,11 @@ check_run([1, 4, 7, 10],1) = 1;
 check_run([1, 4, 7, 10],2) = 1;
 check_run([1, 4, 7, 10],3) = 1;
 
+plt_opt = 'y';
+
 
 for ch = 1:3
 channel = sprintf('chip%d.mat', ch);
-plt_opt = 'n';
-
 
 load(channel);
 c = 2;
@@ -48,11 +48,6 @@ color = {'red', 'green', 'blue'};
 
         % number of time points
         t = 1:16;
-
-        % initialise plot window to watch fitting
-        if plt_opt =='y'
-            h = figure('units','normalized','outerposition',[0.5 0.5 0.6 0.6]);
-        end
 
         for ti = 1:16
 
@@ -113,27 +108,40 @@ color = {'red', 'green', 'blue'};
             D(ti, idx) = fitresult.D;
 
             if plt_opt == 'y' && check_run(i, ch) == 1
+                h = figure('units','normalized','outerposition',[0.2 0.2 0.6 0.6]);
+
+                subplot(2,1,1)
 
                 % Plot data
-                plot(x, y(ti,:), 'k');
+                plot(x, y, 'k');
                 hold on
                 % Plot fit 
-                plot(xData, fitresult(x), '--r' );
+                plot(xData, fitresult(xData), '--r');                
 
                 % Line showing fitted welllength
                 xline(fitresult.wellLength);
 
-                title(sprintf('%s - %s (Run %g): Time %d*30mins',ch,color{c}, i, ti))
                 xlabel('x');
                 ylabel('Normalised Concentration (a.u.)');
+                title(sprintf('%s - %s (Run %g): Time %d*30mins',channel,color{c}, i, ti))
                 ax = gca;
-                ax.FontSize = 18;
+                ax.FontSize = 16;
+                ylim([0 1]);
+                
+                subplot(2,1,2)
+                plot(fitresult,xData, yData,'fit','residuals')
+                title(sprintf('Residuals (gof: R^2 = %g, RMSE = %g)', gof.adjrsquare, gof.rmse));
+                ax = gca;
+                ax.FontSize = 16;
 
-                pause(0.3);
+                pause();
+                close(h);
             end
+
         end
+        
         if check_run(i, ch) == 1
-            h = figure('units','normalized','outerposition',[0.5 0.5 0.6 0.6]);
+            h = figure('units','normalized','outerposition',[0.2 0.2 0.6 0.6]);
             plot(D(:,idx), 'o--') 
             title(sprintf('%s - %s (Run %s): fitted diffusion over time',channel,color{c}, run_label{idx}))
             xlabel('Time (30mins)');
@@ -147,7 +155,7 @@ color = {'red', 'green', 'blue'};
     end
 end
 %% Create box plot of diffusion per run
-h = figure('units','normalized','outerposition',[0.5 0.5 0.6 0.6]);
+h = figure('units','normalized','outerposition',[0.2 0.2 0.6 0.6]);
 boxplot(D(1:end,:), run_label)
 xlabel('Experiment');
 ylabel('D (um^2/s)');
@@ -156,7 +164,7 @@ ax.FontSize = 18;
 title(sprintf('%s - %s',channel,color{c}))
 
 %% Create box plot of diffusion per gel
-h2 = figure('units','normalized','outerposition',[0.5 0.5 0.6 0.6]);
+h2 = figure('units','normalized','outerposition',[0.2 0.2 0.6 0.6]);
 boxplot(D(3:end,:), exp_label)
 xlabel('Experiment');
 ylabel('D (um^2/s)');
