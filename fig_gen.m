@@ -227,7 +227,8 @@ for c = 2:3
         color = 'green';
         c_min = 0;
     end
-
+    exp_results = [];
+    exp_label = {};
     for t = 1:length(thresholds)
         h = figure('units','normalized','outerposition',[0.5 0.5 0.6 0.6]);
         idx = 1;
@@ -235,14 +236,18 @@ for c = 2:3
             chip = chips{ch};
             load(sprintf('%s.mat', chip));
             for n = 1:length(df)
-                get_pen_depth(df{n}, thresholds(t), 'intcp');
-                tmp = cell2mat(getPropArray(df{n},'PcntPenDepth'))*100;
-                exp_results(idx) = tmp(end,c);
-                chip_data = split(df{n}(1,1).Label,'_');
-                run_label = chip_data{2};
-                chip_data = split(run_label, ' ');
-                exp_label(idx) = chip_data(1);
-                idx = idx +1;
+                % only calculte boxplot is using non-outlier results
+                if outliers(n,ch) ~= 1
+                    get_pen_depth(df{n}, thresholds(t), 'intcp');
+                    tmp = cell2mat(getPropArray(df{n},'PcntPenDepth'))*100;
+                    exp_results(idx) = tmp(end,c);
+
+                    chip_data = split(df{n}(1,1).Label,'_');
+                    run_label = chip_data{2};
+                    chip_data = split(run_label, ' ');
+                    exp_label(idx) = chip_data(1);      
+                    idx = idx +1;                    
+                end
             end
         end
 
