@@ -45,7 +45,7 @@ for ch = 1:length(chips)
     close;
 
     
-    %% plot all data at end timepoint
+    %% plot all data at end timepoint but truncated (within black lines above)
     rgb = ['r', 'g', 'b'];
     x1 = 1500; x2 = 8500;
     h = figure('units','normalized','outerposition',[0 0 1 1]);
@@ -57,7 +57,7 @@ for ch = 1:length(chips)
             y = y(x1:x2);
 
             avg_y = movmean(y, 1000);     
-            x = x1:x2;%length(y);
+            x = x1:x2;
             %normalise here
             y = (y - min(y))/max(y- min(y));
             avg_y = (avg_y - min(avg_y))/max(avg_y- min(avg_y));
@@ -85,6 +85,7 @@ for ch = 1:length(chips)
 
     %% plot color with threshold at end timepoint
     rgb = ['r', 'g', 'b'];
+    L = x2 -x1;
     for c = 2:3
         thresholds = [0.1, 0.2, 0.3, 0.5];
         h = figure('units','normalized','outerposition',[0 0 1 1]);
@@ -95,7 +96,7 @@ for ch = 1:length(chips)
             y = y(x1:x2);
             y = movmean(y, 1000);     
             y = (y - min(y))/max(y- min(y));
-            x = 1:length(y);
+            x = 1:L+1;
             plot(x, y, rgb(c), 'LineStyle', '--', 'LineWidth', 1);          
            % xline(x1, 'k','LineWidth', 2);
            % xline(x2, 'k','LineWidth', 2);
@@ -104,11 +105,11 @@ for ch = 1:length(chips)
             title(sprintf('%s (Run %g)',chip_data{2}, 4*m + n))
             for t = 1:length(thresholds)
                 get_pen_depth(df{4*m + n}, thresholds(t), 'intcp');
-                xline(df{4*m + n}(end,c).PcntPenDepth*(x2-x1), '--k','LineWidth', 2);
+                xline(df{4*m + n}(end,c).PcntPenDepth*L, '--k','LineWidth', 2);
                 yline(thresholds(t), ':k','LineWidth', 1);
                 hold on
             end
-            xlim([x1 x2]);
+            xlim([1 L]);
             ax = gca;
             ax.FontSize = 14;
             end
