@@ -109,4 +109,5 @@ xlabel('Experiment');
 ylabel('D (um^2/s)');
 ax = gca;
 ax.FontSize = 18;
-            
+title(sprintf('%s - %s',ch,color{c}))
+

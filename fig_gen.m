@@ -57,7 +57,7 @@ for ch = 1:length(chips)
             y = y(x1:x2);
 
             avg_y = movmean(y, 1000);     
-            x = 1:length(y);
+            x = x1:x2;%length(y);
             %normalise here
             y = (y - min(y))/max(y- min(y));
             avg_y = (avg_y - min(avg_y))/max(avg_y- min(avg_y));
@@ -69,7 +69,7 @@ for ch = 1:length(chips)
         end
         chip_data = split(df{4*m + n}(1,1).Label,'_');
         title(sprintf('%s - %s (Run %g)',chip_data{1},chip_data{2}, 4*m + n))
-        xlim([0 L]);
+        xlim([x1 x2]);
         ax = gca;
         ax.FontSize = 18;
         
@@ -104,11 +104,11 @@ for ch = 1:length(chips)
             title(sprintf('%s (Run %g)',chip_data{2}, 4*m + n))
             for t = 1:length(thresholds)
                 get_pen_depth(df{4*m + n}, thresholds(t), 'intcp');
-                xline(df{4*m + n}(end,c).PcntPenDepth*L, '--k','LineWidth', 2);
+                xline(df{4*m + n}(end,c).PcntPenDepth*(x2-x1), '--k','LineWidth', 2);
                 yline(thresholds(t), ':k','LineWidth', 1);
                 hold on
             end
-            xlim([0 L]);
+            xlim([x1 x2]);
             ax = gca;
             ax.FontSize = 14;
             end
@@ -137,17 +137,18 @@ for ch = 1:length(chips)
         run_label = {};
         exp_results = [];
         for n = 1:length(df)
-            if outliers(n,ch) == 1
                 get_pen_depth(df{n}, thresholds(t), 'intcp');
                 [N_exp, N_ch] = size(df{n});
-                tmp = cell2mat(getPropArray(df{n},'PcntPenDepth'));
+                tmp = cell2mat(getPropArray(df{n},'PcntPenDepth'));                    
                 exp_results(n,:) = tmp(end,:)*100;
                 exp_label{:, n} = join(['Run', string(n)]);% + "CH"+ string(getPropArray(df{1}, 'ChannelNum'));    
                 chip_data = split(df{n}(1,1).Label,'_');
                 chip_label{n} = chip_data{1};
                 run_label{n} = chip_data{2};
-            end
         end
+        % set outlier results to NaN (not a number);
+        exp_results(outliers(:,ch) == 1, :) = NaN;
+        
         %get colours for bar charts
         base = repmat([0 0 0], length(c_opt),1);
         for n = 1:length(c_opt)
@@ -169,7 +170,7 @@ for ch = 1:length(chips)
         xtickangle(45)
         yticks([0 20 40 60 80 100]);
         ylim([0 100]);
-        ytickformat('Percentage');
+%         ytickformat('Percentage');
         ylabel('Penetration Depth of Dye/Particle (%)');
         title_str = sprintf('%s (threshold=%d%%)',chip_label{1}, thresholds(t)*100);
         title(title_str, 'FontSize', 24)
@@ -183,8 +184,8 @@ for ch = 1:length(chips)
         trp_mean = []; trp_std = [];trp_labels = {};
         for n = 1:n_gels
             triplicates = 3*n-2:3*n;
-            c_m = mean(exp_results(triplicates,c_opt));
-            c_std = std(exp_results(triplicates,c_opt));
+            c_m = nanmean(exp_results(triplicates,c_opt));
+            c_std = nanstd(exp_results(triplicates,c_opt));
             trp_mean = horzcat(trp_mean, c_m);
             trp_std = horzcat(trp_std, c_std);
             chip_data = split(run_label{3*n-2}, ' ');
