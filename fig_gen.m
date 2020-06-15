@@ -15,7 +15,7 @@ for ch = 1:length(chips)
         for n = 1:4
             subplot(4,3, 4*m + n)
             for c = 1:3
-                y = df{4*m + n}(end,c).MeanIntensity;
+                y = df{4*m + n}(1,c).MeanIntensity;
 
                 avg_y = movmean(y, 1000);     
                 x = 1:length(y);
@@ -87,7 +87,7 @@ for ch = 1:length(chips)
     rgb = ['r', 'g', 'b'];
     L = x2 -x1;
     for c = 2:3
-        thresholds = [0.1, 0.2, 0.3, 0.5];
+        thresholds = [0.05 0.1, 0.2, 0.3, 0.5];
         h = figure('units','normalized','outerposition',[0 0 1 1]);
         for m = 0:2
             for n = 1:4
@@ -220,6 +220,13 @@ for ch = 1:length(chips)
     end
 end
 %% Comparison of data
+thresholds = [0.05 0.1, 0.2, 0.3, 0.5];
+chips  = {'chip1','chip2','chip3'};
+outliers = zeros(12,3);
+outliers(2,1) = 1;
+outliers([2,3,6],2) = 1;
+outliers([2,3],3) = 1;
+
 for c = 2:3
     if c == 3
         color = 'blue';
@@ -230,38 +237,69 @@ for c = 2:3
     end
     exp_results = [];
     exp_label = {};
-    for t = 1:length(thresholds)
-        h = figure('units','normalized','outerposition',[0.5 0.5 0.6 0.6]);
-        idx = 1;
-        for ch = 1:length(chips)
-            chip = chips{ch};
-            load(sprintf('%s.mat', chip));
-            for n = 1:length(df)
-                % only calculte boxplot is using non-outlier results
-                if outliers(n,ch) ~= 1
-                    get_pen_depth(df{n}, thresholds(t), 'intcp');
-                    tmp = cell2mat(getPropArray(df{n},'PcntPenDepth'))*100;
-                    exp_results(idx) = tmp(end,c);
+    list = [{1}, {2}, {1:2}];
+    for i = 1:3
+        for t = 1:length(thresholds)
+            idx = 1;
+            for ch = 1:length(chips)
+                chip = chips{ch};
+                load(sprintf('%s.mat', chip));
+                for n = 1:length(df)
+                    % only calculte boxplot is using non-outlier results
+                    if outliers(n,ch) ~= 1
+                        get_pen_depth(df{n}, thresholds(t), 'intcp');
+                        tmp = cell2mat(getPropArray(df{n},'PcntPenDepth'))*100;
+                        exp_results(idx) = tmp(end,c);
 
-                    chip_data = split(df{n}(1,1).Label,'_');
-                    run_label = chip_data{2};
-                    chip_data = split(run_label, ' ');
-                    exp_label(idx) = chip_data(1);      
-                    idx = idx +1;                    
+                        chip_data = split(df{n}(1,1).Label,'_');
+                        run_label = chip_data{2};
+                        chip_data = split(run_label, ' ');
+                        exp_label(idx) = {chip_data{1}(list{i})};
+                        idx = idx +1;                    
+                    end
                 end
             end
+%             
+%         h = figure('units','normalized','outerposition',[0.5 0.5 0.6 0.6]);
+%         boxplot(exp_results,exp_label)
+%         title_str = sprintf('Boxplot for all penetration data (threshold=%d%%, color=%s)',thresholds(t)*100, color);
+%         title(title_str);
+%         ylim([c_min,100])
+%         xlabel('Chip data');
+%         ytickformat('percentage');
+%         ylabel('Penetration Depth (%)')
+%         ax=gca;
+%         ax.FontSize = 18;
+%         saveas(h,sprintf('%s_boxplot_comp_%g_th_%g.png', color, i, t))
+%         close();
         end
+%         uncomment this for t-tests
+        gel = unique(exp_label);
 
-        boxplot(exp_results,exp_label)
-        title_str = sprintf('Boxplot for all penetration data (threshold=%d%%, color=%s)',thresholds(t)*100, color);
-        title(title_str);
-        ylim([c_min,100])
-        xlabel('Chip data');
-        ytickformat('percentage');
-        ylabel('Penetration Depth (%)')
-        ax=gca;
-        ax.FontSize = 18;
-        saveas(h,sprintf('boxplot_th_%g (%s).png',t, color))
-        close();
+%         fprintf("%s, %s, %s", gel{i}, thresholds(t), color);
+        [A,sortIdx] = sort(exp_label);
+        B = exp_results(sortIdx);
+        tmp = [A;num2cell(B)];
+%           check signifigance  :: C/M
+        x = cell2mat(tmp(2, (contains(tmp(1,:),'C'))));
+        y = cell2mat(tmp(2, (contains(tmp(1,:),'M'))));
+        [h,p] = ttest2(x,y);
+        if h == true
+            sprintf('Statistical signifance:\n %s, %s (C/M) \n h = %s, p = %s',thresholds(t), color, h, p); 
+        end
+%           check signifigance  :: +/-
+        x = cell2mat(tmp(2, (contains(tmp(1,:),'+'))));
+        y = cell2mat(tmp(2, (contains(tmp(1,:),'-'))));
+        [h,p] = ttest2(x,y);
+        if h == true
+            sprintf('Statistical signifance:\n %s, %s (+/-) \n h = %s, p = %s',thresholds(t), color, h, p); 
+        end
+        
+        
     end
+    
+    
 end
+
+
+%%
