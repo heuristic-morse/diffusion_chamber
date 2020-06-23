@@ -5,7 +5,7 @@ outliers = zeros(12,3);
 outliers(2,1) = 1;
 outliers([2,3,6],2) = 1;
 outliers([2,3],3) = 1;
-
+timepoint = 8;
 for c = 2:3
     if c == 3
         color = 'blue';
@@ -28,7 +28,7 @@ for c = 2:3
                     if outliers(n,ch) ~= 1
                         get_pen_depth(df{n}, thresholds(t), 'intcp');
                         tmp = cell2mat(getPropArray(df{n},'PcntPenDepth'))*100;
-                        exp_results(idx) = tmp(end,c);
+                        exp_results(idx) = tmp(timepoint,c);
 
                         chip_data = split(df{n}(1,1).Label,'_');
                         run_label = chip_data{2};
