@@ -9,21 +9,21 @@ outliers([2,3,6],2) = 1;
 outliers([2,3],3) = 1;
 
 check_run = zeros(12,3);
-check_run(5,1) = 1;
+% check_run1,1) = 1;
 % check_run([1, 4, 7, 10],1) = 1;
 % check_run([1, 4, 7, 10],2) = 1;
 % check_run([1, 4, 7, 10],3) = 1;
 
-plt_opt = 'y';
+plt_opt = 'n';
 anim_opt = 'n';
 
 for ch = 1:3
 channel = sprintf('chip%d.mat', ch);
 
 load(channel);
-c = 2;
+c = 3;
 color = {'red', 'green', 'blue'};
-    for i = 5
+    for i = 1:12
 
         chip_data = split(df{i}(1,1).Label,'_');
         chip_label{idx} = chip_data{1};
@@ -34,17 +34,16 @@ color = {'red', 'green', 'blue'};
         if outliers(i, ch) == 1
             continue
         end
-
         % print out of which chip and experiment number for debugging
         fprintf('%s - %s (Run %g)\n',channel,color{c}, i);
 
         % get data from experiment data chip file
         tmp = df{i}(:,c);
 
-        % select range of x values (x2=8500 seems end of channel)
-        x1 = 1;% requires well to fit diffusion
-        x2 = 8500;
-        x = x1:x2;
+        % select range of x values
+        x1 = 1500;% requires well to fit diffusion
+        x2 = 9000;
+        x = linspace(0, x2-x1, x2-x1+1);
 
         % number of time points
         t = 16;
@@ -57,10 +56,13 @@ color = {'red', 'green', 'blue'};
 
             % normalise all data by subtracting min and dividing by max of Y1
             if ti == 1
-                minX = min(tmpY(x1:x2));
-                maxX = max(tmpY(x1:x2) - minX);
+                minX = min(tmpY);
+                maxX = max(tmpY - minX);
             end
-
+            if c == 3
+                minX = min(tmpY);
+                maxX = max(tmpY - minX);
+            end
             % normalise and select only relevant range
             y = (tmpY - minX)/maxX;
 
@@ -70,42 +72,44 @@ color = {'red', 'green', 'blue'};
 
             tmpY = (tmpY - min(tmpY))/max(tmpY - min(tmpY));
             
-            % Choice of fitting equation and subsequnt fitting
+             [xData, yData] = prepareCurveData(x, y);
+             % Choice of fitting equation and subsequnt fitting
     %        % Case 1
     %        % Diffusion from a well - includes additional fitting parameter
     %        (wellLength)
-            [xData, yData] = prepareCurveData( x, y);
-            fitresult = fittype(sprintf('0.5*(erf((x+wellLength)./(2*sqrt(D*%d))) - erf((x-wellLength)./(6*sqrt(D*%d))))',[ti*108000, ti*108000]),...
-                     'independent', 'x', 'dependent', 'y' );
-            opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
-            opts.Display = 'Off';
-
-            % Fit parameter ranges for [D wellLength])
-            opts.Lower = [0 0];
-            opts.StartPoint = [5 2000];
-            opts.Upper = [30 4000];
+% 
+%             fitresult = fittype(sprintf('0.5*(erf((x+wp)./(6*sqrt(D*%d))) - erf((x-wp)./(6*sqrt(D*%d))))',[ti*1800, ti*1800]),...
+%                      'independent', 'x', 'dependent', 'y' );
+%             opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
+%             opts.Display = 'Off';
+% 
+%             % Fit parameter ranges for [D wellLength])
+%             opts.Lower = [0 0];
+%             opts.StartPoint = [100 2000];
+%             opts.Upper = [10000 10000];
 
     %        % Case 2 
-    %        % Constant Source Diffusion - requires constant max at x=0
-
-    %         fitresult = fittype(sprintf('(1/sqrt(2*D*%d))*abs(exp(-(x*x)./(4*D*%d)))',[ti*108000, ti*108000]),...
-    %              'independent', 'x', 'dependent', 'y' );
-    %         opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
-    %         opts.Display = 'Off';
-    %         opts.Lower = 0;
-    %         opts.StartPoint = 5;
-    %         opts.Upper = 30;
+    %        % Instantaneous Source Diffusion - requires constant max at x=0 -
+%     %        use for green
+% % 
+%             fitresult = fittype(sprintf('%d*exp(-x*x./(4*D*%d))',[y(1),ti*1800]),...
+%                  'independent', 'x', 'dependent', 'y' );
+%             opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
+%             opts.Display = 'Off';
+%             opts.Lower = 1;
+%             opts.StartPoint = 100;
+%             opts.Upper = 10000;
 
     %        % Case 3
-    %        % Instantaneous Source Diffusion - ignores additional contribution
-    %        % from well
-    %          fitresult = fittype(sprintf('erfc(x/(2*sqrt(D*%d)))',ti*108000),...
-    %              'independent', 'x', 'dependent', 'y' );
-    %         opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
-    %         opts.Display = 'Off';
-    %         opts.Lower = 0;
-    %         opts.StartPoint = 5;
-    %         opts.Upper = 30;
+    %        % Constant Source Diffusion - ignores additional contribution
+    %        % from well - use for blue
+             fitresult = fittype(sprintf('erfc(x/sqrt(4*D*%d))',ti*1800),...
+                 'independent', 'x', 'dependent', 'y' );
+            opts = fitoptions( 'Method', 'NonlinearLeastSquares' );
+            opts.Display = 'Off';
+            opts.Lower = 0;
+            opts.StartPoint = 0.5;
+            opts.Upper = 10000;
 
             % Fit model to data.
             [fitresult, gof] = fit( xData, yData, fitresult, opts );
@@ -141,13 +145,12 @@ color = {'red', 'green', 'blue'};
                 hold on
                 % Plot fit 
                 plot(xData, fitresult(xData), '--r');                
-
                 % Line showing fitted welllength
-                xline(fitresult.wellLength);
+%                 xline(fitresult.wp);
 
                 xlabel('x');
                 ylabel('Normalised Concentration (a.u.)');
-                title(sprintf('%s - %s (Run %g): Time %dmins',channel,color{c}, i, ti*30))
+                title(sprintf('D = %s,%s - %s (Run %g): Time %dmins',fitresult.D, channel,color{c}, i, ti*30))
                 ax = gca;
                 ax.FontSize = 16;
                 ylim([0 1]);
@@ -201,23 +204,23 @@ title(sprintf('%s - %s',channel,color{c}))
 figure
 bar(sum(gof_r2>0.9))
 set(gca,'XTick', 1:30,'XTickLabel', exp_label)
-ylabel('# of tpoints w R^2 > 0.9')
+ylabel('# of tpoints w R^2 > 0.95')
 xlabel('experiment label')
 set(gca,'XTick', 1:30,'XTickLabel', run_label)
 set(gcf,'color','w');
 ax = gca;
 ax.FontSize = 18;
-title(sprintf('number of fits w R^2 > 0.9 - %s',color{c}))
+title(sprintf('number of fits w R^2 > 0.95 - %s',color{c}))
 
 
 %% goodness of fit corrected boxplot
 
-boxplot(D(:,(sum(gof_r2>0.95) > 10)),  run_label(sum(gof_r2>0.95) > 10))
+boxplot(D(:,(sum(gof_r2>0.9) > 10)),  run_label(sum(gof_r2>0.9) > 10))
 xlabel('Experiment');
 ylabel('D (um^2/s)');
 ax = gca;
 ax.FontSize = 18;
-title(sprintf('all channels - %s',color{c}))
+title(sprintf('all channels - %s (R2 over 0.95)',color{c}))
 
 %% goodness of fit corrected boxplot
 
@@ -226,4 +229,14 @@ xlabel('Experiment');
 ylabel('D (um^2/s)');
 ax = gca;
 ax.FontSize = 18;
-title(sprintf('all channels & all experiments - %s',color{c}))
+title(sprintf('all channels & all experiments - %s (R2 over 0.95)',color{c}))
+
+%% Reference
+
+ D_ref = [288, 160, 135, 82, 45, 80, 30];
+ size_ref = [1, 1.8, 2.2, 3.6, 6.5, 3.6, 9.8];
+ figure
+ loglog(size_ref,D_ref, 'o') 
+ hold on
+ 
+ loglog(20, 12, '*')

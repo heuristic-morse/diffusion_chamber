@@ -9,7 +9,7 @@ for ch = 1:length(chips)
     load(sprintf('%s.mat', chip));
     %% plot all data at end timepoint
     rgb = ['r', 'g', 'b'];
-    x1 = 1500; x2 = 8500;
+    x1 = 1500; x2 = 9000;
     h = figure('units','normalized','outerposition',[0 0 1 1]);
     for m = 0:2
         for n = 1:4
@@ -47,7 +47,7 @@ for ch = 1:length(chips)
     
     %% plot all data at end timepoint but truncated (within black lines above)
     rgb = ['r', 'g', 'b'];
-    x1 = 1500; x2 = 8500;
+    x1 = 1500; x2 = 9000;
     h = figure('units','normalized','outerposition',[0 0 1 1]);
     for m = 0:2
         for n = 1:4
@@ -96,8 +96,8 @@ for ch = 1:length(chips)
             y = y(x1:x2);
             y = movmean(y, 1000);     
             y = (y - min(y))/max(y- min(y));
-            x = 1:L+1;
-            plot(x, y, rgb(c), 'LineStyle', '--', 'LineWidth', 1);          
+            x = 0:L;
+            plot(x/L, y, rgb(c), 'LineStyle', '--', 'LineWidth', 1);          
            % xline(x1, 'k','LineWidth', 2);
            % xline(x2, 'k','LineWidth', 2);
             hold on
@@ -105,11 +105,11 @@ for ch = 1:length(chips)
             title(sprintf('%s (Run %g)',chip_data{2}, 4*m + n))
             for t = 1:length(thresholds)
                 get_pen_depth(df{4*m + n}, thresholds(t), 'intcp');
-                xline(df{4*m + n}(end,c).PcntPenDepth*L, '--k','LineWidth', 2);
+                xline(df{4*m + n}(end,c).PcntPenDepth, '--k','LineWidth', 2);
                 yline(thresholds(t), ':k','LineWidth', 1);
                 hold on
             end
-            xlim([1 L]);
+            xlim([0 1]);
             ax = gca;
             ax.FontSize = 14;
             end
@@ -220,14 +220,14 @@ for ch = 1:length(chips)
     end
 end
 %% Comparison of data
-thresholds = [0.05 0.1, 0.2, 0.3, 0.5];
+thresholds = [0.1];
 chips  = {'chip1','chip2','chip3'};
 outliers = zeros(12,3);
 outliers(2,1) = 1;
 outliers([2,3,6],2) = 1;
 outliers([2,3],3) = 1;
 
-for c = 2:3
+for c = 3
     if c == 3
         color = 'blue';
         c_min = 0;
@@ -259,45 +259,25 @@ for c = 2:3
                     end
                 end
             end
-%             
-%         h = figure('units','normalized','outerposition',[0.5 0.5 0.6 0.6]);
-%         boxplot(exp_results,exp_label)
-%         title_str = sprintf('Boxplot for all penetration data (threshold=%d%%, color=%s)',thresholds(t)*100, color);
-%         title(title_str);
-%         ylim([c_min,100])
-%         xlabel('Chip data');
-%         ytickformat('percentage');
-%         ylabel('Penetration Depth (%)')
-%         ax=gca;
-%         ax.FontSize = 18;
-%         saveas(h,sprintf('%s_boxplot_comp_%g_th_%g.png', color, i, t))
-%         close();
+            
+        h = figure('units','normalized','outerposition',[0.5 0.5 0.6 0.6]);
+        f1 = scatter(grp2idx(categorical(exp_label)), exp_results,'filled','MarkerFaceAlpha',0.6');%,'jitter','on','jitterAmount',0.15);        
+        hold on
+        f2 = boxplot(exp_results,categorical(exp_label));
+        
+        title_str = sprintf('Boxplot for all penetration data (threshold=%d%%, color=%s)',thresholds(t)*100, color);
+        title(title_str);
+        ylim([c_min,100])
+        xlabel('Chip data');
+        ytickformat('percentage');
+        ylabel('Penetration Depth (%)')
+        ax=gca;
+        ax.FontSize = 18;
+%        saveas(h,sprintf('%s_boxplot_comp_%g_th_%g.eps', color, i, t))
+        pause();        
         end
-%         uncomment this for t-tests
-        gel = unique(exp_label);
 
-%         fprintf("%s, %s, %s", gel{i}, thresholds(t), color);
-        [A,sortIdx] = sort(exp_label);
-        B = exp_results(sortIdx);
-        tmp = [A;num2cell(B)];
-%           check signifigance  :: C/M
-        x = cell2mat(tmp(2, (contains(tmp(1,:),'C'))));
-        y = cell2mat(tmp(2, (contains(tmp(1,:),'M'))));
-        [h,p] = ttest2(x,y);
-        if h == true
-            sprintf('Statistical signifance:\n %s, %s (C/M) \n h = %s, p = %s',thresholds(t), color, h, p); 
-        end
-%           check signifigance  :: +/-
-        x = cell2mat(tmp(2, (contains(tmp(1,:),'+'))));
-        y = cell2mat(tmp(2, (contains(tmp(1,:),'-'))));
-        [h,p] = ttest2(x,y);
-        if h == true
-            sprintf('Statistical signifance:\n %s, %s (+/-) \n h = %s, p = %s',thresholds(t), color, h, p); 
-        end
-        
-        
     end
-    
     
 end
 

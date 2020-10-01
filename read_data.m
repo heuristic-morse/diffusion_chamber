@@ -5,6 +5,7 @@ close all; clear all;
 %data_dir = "L:/Wolfson Data/Microscopy Data Collection/TripleChip - Fluorescein/Chip 2/";
 data_dir = "";
 folders = dir(join([data_dir "*001"], ""));
+folders = dir(data_dir);
 
 % User inputs: 
 % check whether to run on all folders or not

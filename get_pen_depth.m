@@ -5,7 +5,6 @@ function df = get_pen_depth(df, threshold, fcn_name)
 x1 = 1500;
 x2 = 9000;
 L = x2 - x1;
-
 x = 1:L;
 for c_idx = 2:N_ch
     for t_idx = 1:N_tp
