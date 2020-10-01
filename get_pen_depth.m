@@ -21,6 +21,8 @@ for c_idx = 2:N_ch
         switch fcn_name
             case 'intcp'   
                 % normalise y to avoid thresholding errors
+
+                y
                 y = y(x1:x2);
                 y = movmean(y, 1000);
                 y = (y - min(y))/max(y- min(y));
