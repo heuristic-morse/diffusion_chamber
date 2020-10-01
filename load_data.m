@@ -43,4 +43,3 @@ function df = load_data(folder_name, file_type, load_prompt)
     end
    
 end
-
